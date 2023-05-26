@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { RoleController } from './controllers/RoleController';
 import { UserController } from './controllers/UserController';
+import { LogController } from './controllers/LogController';
 
 const routes = Router();
 
@@ -15,5 +16,7 @@ routes.post('/role', new RoleController().create);
 routes.get('/user', new UserController().read);
 routes.post('/user', new UserController().create);
 
+//LOG
+routes.get('/logs', new LogController().read);
 
 export default routes;

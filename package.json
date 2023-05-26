@@ -14,10 +14,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/node-fetch": "^2.6.4",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "node-fetch": "^2.6.11",
     "pg": "^8.11.0",
-    "reflect-metadata": "^0.1.13"
+    "reflect-metadata": "^0.1.13",
+    "xmlhttprequest-ts": "^1.0.1"
   },
   "devDependencies": {
     "@types/body-parser": "^1.19.2",

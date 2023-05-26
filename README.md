@@ -8,7 +8,9 @@ O API Gateway nada mais é do que um gerenciador de tráfego que faz a interface
 
 - Estudo do TypeScript
 - Estudo do TypeORM
+- Configuração do Ngrok para testes de requisição
 - Configuração do Debug, para agilizar o processo de desenvolvimento
+- Iniciando registro de logs
 - Configurações do framework para uso geral tanto da API Gateway quando das demais API Services
   - container separado database "postgres'
   - container API Gateway
