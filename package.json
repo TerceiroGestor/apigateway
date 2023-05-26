@@ -8,7 +8,7 @@
     "start:dev": "nodemon",
     "build": "npx tsc",
     "migration:generate": "typeorm-ts-node-commonjs -d ./src/data-source.ts migration:generate ./src/migrations/default",
-    "migration:run": "typeorm-ts-node-commonjs -d ./src/data-source.ts migration:run"  
+    "migration:run": "typeorm-ts-node-commonjs -d ./src/data-source.ts migration:run"
   },
   "keywords": [],
   "author": "",
@@ -27,7 +27,9 @@
     "body-parser": "^1.20.2",
     "jsonwebtoken": "^9.0.0",
     "nodemon": "^2.0.22",
+    "sucrase": "^3.32.0",
     "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0",
     "typeorm": "^0.3.16",
     "typescript": "^5.0.4"
   }

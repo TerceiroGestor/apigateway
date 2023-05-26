@@ -1,13 +1,12 @@
-import express, { Request, Response } from 'express';
+import { Router } from 'express';
+import { RoleController } from './controllers/RoleController';
 
-const router = express.Router();
+const router = Router();
 
-router.get('/', (req: Request, res: Response) => {
-  res.send('Resposta do endpoint');
+router.get('/', (req, res) => {
+  res.send('Connect Endpoint API Gateway');
 });
 
-router.get('/database', (req: Request, res: Response) => {
-  res.send('Resposta do endpoint');
-});
+router.post('/role', new RoleController().create);
 
 export default router;
