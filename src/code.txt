@@ -1,0 +1,42 @@
+// Rota protegida
+app.get('/recurso-protegido', verifyToken, (req, res) => {
+  // Exemplo de acesso a um recurso protegido
+  res.json({ message: 'Você acessou um recurso protegido!' });
+});
+
+// Middleware para lidar com erros
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Ocorreu um erro no servidor.' });
+});
+
+// Rota de autenticação
+app.post('/auth', (req, res) => {
+  // Aqui você implementaria a lógica de autenticação, como a verificação das credenciais
+  // e a geração do token JWT
+  
+  // Exemplo de geração do token JWT
+  const user = { id: 1, username: 'usuariodeexemplo' };
+  const token = jwt.sign(user, secretKey);
+  
+  res.json({ token });
+});
+
+const secretKey = 'sua-chave-secreta-aqui';
+
+// Middleware para verificar o token JWT
+const verifyToken = (req: Request, res: Response, next: NextFunction) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  
+  if (!token) {
+    return res.status(401).json({ message: 'Token não fornecido.' });
+  }
+  
+  try {
+    const decoded = jwt.verify(token, secretKey);
+    //req.user = decoded;
+    next();
+  } catch (err) {
+    return res.status(401).json({ message: 'Token inválido.' });
+  }
+};
