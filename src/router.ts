@@ -6,4 +6,8 @@ router.get('/', (req: Request, res: Response) => {
   res.send('Resposta do endpoint');
 });
 
+router.get('/database', (req: Request, res: Response) => {
+  res.send('Resposta do endpoint');
+});
+
 export default router;

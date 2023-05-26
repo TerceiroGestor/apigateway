@@ -2,7 +2,7 @@
 FROM node:latest
 
 # Define o diretório de trabalho dentro do container
-WORKDIR /app
+WORKDIR /usr/app
 
 # Copia o arquivo package.json e o package-lock.json para o diretório de trabalho
 COPY package*.json ./
@@ -13,5 +13,7 @@ RUN npm install
 # Copia o restante dos arquivos da aplicação para o diretório de trabalho
 COPY . .
 
-# Comando para iniciar a aplicação
-CMD [ "npm run start:dev"]
+EXPOSE 3000
+
+# Comando para iniciar a aplicaçãoCMD 
+CMD [ "npm", "run", "start"]
