@@ -19,6 +19,14 @@ O API Gateway nada mais é do que um gerenciador de tráfego que faz a interface
 
 </details>
 
+<details><summary>05/06/2023</summary>
+
+- Configuração do docker-compose
+  - utilizando network para comunicar api com database
+- Testes de comunicação, manutenção da API e do Database  
+
+</details>
+
 <details><summary>próxima etapa</summary>
 
 - container API Service
