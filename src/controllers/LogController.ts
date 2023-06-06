@@ -4,12 +4,24 @@ import { XMLHttpRequest } from 'xmlhttprequest-ts';
 
 export class LogController {
 
-    async read(req: Request, res: Response) {
+    async find(req: Request, res: Response) {
         try {
 
             const data = await logRepository.find();
             return res.status(201).json({data});
 
+        } catch (error) {
+            return res.status(500).json({ message: "Internal Server Error" });
+        }
+    }
+
+    async findOne(req: Request, res: Response) {
+        try {
+            
+            const data = await logRepository.findOneBy({
+                id: req.body.id //* req.params.id */
+            });
+            return res.status(201).json({data});
         } catch (error) {
             return res.status(500).json({ message: "Internal Server Error" });
         }

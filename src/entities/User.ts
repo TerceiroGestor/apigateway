@@ -16,7 +16,7 @@ import { Role } from "./Role"
 
 export class User {
     @PrimaryGeneratedColumn("uuid")
-    id: number | undefined
+    id: string | undefined
 
     @OneToOne(() => Role, role => role.user)
     @JoinColumn({name: 'role_id'})

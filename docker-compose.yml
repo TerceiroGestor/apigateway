@@ -1,9 +1,14 @@
 version: '3'
 services:
-  app:
-    build: .
-    ports:
-      - 3000:3000
-    volumes:
-      - .:/app
+  apigateway:
+    extends:
+      file: docker/docker-compose.api.yml
+      service: apigateway
+  database:
+    extends:
+      file: docker/docker-compose.database.yml
+      service: database
+
+networks:
+  main-network:  
    

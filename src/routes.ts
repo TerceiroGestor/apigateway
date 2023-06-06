@@ -10,13 +10,21 @@ routes.get('/', (req, res) => {
 });
 
 //ROLE
+routes.get('/role', new RoleController().find);
+routes.get('/role/:id', new RoleController().findOne);
 routes.post('/role', new RoleController().create);
+//update
+//delete
 
 //USER
-routes.get('/user', new UserController().read);
+routes.get('/user', new UserController().find);
+routes.get('/user/:id', new UserController().findOne);
 routes.post('/user', new UserController().create);
+//update
+//delete
 
 //LOG
-routes.get('/logs', new LogController().read);
+routes.get('/logs', new LogController().find);
+routes.get('/logs/:id', new LogController().findOne);
 
 export default routes;

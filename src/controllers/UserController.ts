@@ -1,11 +1,10 @@
 import { Request, Response, response } from "express";
 import { userRepository } from "../repositories/userRepository";
 import { LogController } from "./LogController";
-
+//new LogController().create(req, res, 'read user');
 export class UserController {
-    async read(req: Request, res: Response) {
+    async find(req: Request, res: Response) {
         try {
-
             const data = await userRepository.find({
                 relations: {
                     role: true
@@ -14,6 +13,21 @@ export class UserController {
             new LogController().create(req, res, 'read user');
             return res.status(201).json({data});
 
+        } catch (error) {
+            return res.status(500).json({ message: "Internal Server Error" });
+        }
+    }
+
+    async findOne(req: Request, res: Response) {
+        try {
+            const data = await userRepository.find({
+                where: {id: req.params.id},
+                relations: {
+                    role: true
+                }
+            });
+            new LogController().create(req, res, 'read user');
+            return res.status(201).json({data});
         } catch (error) {
             return res.status(500).json({ message: "Internal Server Error" });
         }
