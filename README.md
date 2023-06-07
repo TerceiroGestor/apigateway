@@ -40,8 +40,8 @@ O API Gateway nada mais é do que um gerenciador de tráfego que faz a interface
       idade: 25,
       email: 'exemplo@example.com'
     };
-
-    axios.post('https://terceirogestor/api/{service}', data, {
+    
+    axios.post(ENDPOINT + '{service}', data, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer <token>'

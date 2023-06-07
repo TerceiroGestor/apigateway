@@ -5,7 +5,7 @@ FROM node:latest
 WORKDIR /app
 
 # Copia o arquivo package.json e package-lock.json para o diretório de trabalho
-COPY package*.json ./
+COPY . /app
 
 # Instala as dependências do projeto
 RUN npm install
@@ -15,3 +15,5 @@ COPY . .
 
 # Define o comando a ser executado quando o contêiner for iniciado
 CMD ["npm", "run", "start"]
+
+EXPOSE 3000
