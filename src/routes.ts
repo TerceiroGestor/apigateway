@@ -2,12 +2,19 @@ import { Router } from 'express';
 import { RoleController } from './controllers/RoleController';
 import { UserController } from './controllers/UserController';
 import { LogController } from './controllers/LogController';
+import { RegisterController } from './controllers/RegisterController';
+import authenticationMiddleware from './middleware/authenticationMiddleware';
+import authorizationMiddleware from './middleware/authorizationMiddleware';
 
 const routes = Router();
 
 routes.get('/', (req, res) => {
   res.send('Connect Endpoint API Gateway');
 });
+
+//Services
+routes.get('/register', authenticationMiddleware, authorizationMiddleware, new RegisterController().service);
+routes.get('/finance', new RoleController().find);
 
 //ROLE
 routes.get('/role', new RoleController().find);

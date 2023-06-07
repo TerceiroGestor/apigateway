@@ -27,10 +27,47 @@ O API Gateway nada mais é do que um gerenciador de tráfego que faz a interface
 
 </details>
 
-<details><summary>próxima etapa</summary>
+<details><summary>06/06/2023</summary>
 
-- container API Service
-- rota na API Gateway para acessar a API Service
-- middleware na API Gateway para trabalhar regras de acesso a API Service
+- Definindo a estrutura
+- Configurando um Banco de Dados online para iniciar os testes da estrutura
+- Definido a estrutura de API Gateway com os Serviços
+- Definido o endpoint principal para o FrontEnd
+  - Exemplo de endpoint: https://terceirogestor/api/{service}, com os dados no corpo da requisição, pode usar por exemplo o "AXIOS" para fazer esta requisição:
+    ```javascript
+    const data = {
+      nome: 'Exemplo',
+      idade: 25,
+      email: 'exemplo@example.com'
+    };
+
+    axios.post('https://terceirogestor/api/{service}', data, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer <token>'
+      }
+    }).then(response => {
+      console.log(response.data);
+    }).catch(error => {
+      console.error(error);
+    });
+    ```
+  - Com esse endpoint o API Gateway consegue enter o serviço que está sendo requisitado, e por meio da rota depois de fazer a autenticação e verificar a autorização faz outra requisição para o serviço e essim retorna a resposta.
+
+</details>
+
+<details><summary>PRÓXIMAS ETAPAS</summary>
+
+- Iniciar a construção completa
+  - Cadastrar no Firebase
+  - Reorganizar a API Gateway
+  - Criar os primeiros serviços
+    - Register
+    - Login
+  - Refatorar a API Gateway para validar a estrutura
+  - Criar os outros serviços
+    - Organização
+    - Registro de frota
+    - Doções    
 
 </details>
