@@ -11,7 +11,7 @@ export class UserController {
                 }
             });
             new LogController().create(req, res, 'read user');
-            return res.status(201).json({data});
+            return res.status(201).json({ data });
 
         } catch (error) {
             return res.status(500).json({ message: "Internal Server Error" });
@@ -21,13 +21,42 @@ export class UserController {
     async findOne(req: Request, res: Response) {
         try {
             const data = await userRepository.find({
-                where: {id: req.params.id},
+                where: { id: req.params.id },
                 relations: {
                     role: true
                 }
             });
+
+            /* 
+            userRepository.find({
+                select: {
+                    firstName: true,
+                    lastName: true,
+                },
+                relations: {
+                    profile: true,
+                    photos: true,
+                    videos: true,
+                },
+                where: {
+                    firstName: "Timber",
+                    lastName: "Saw",
+                    profile: {
+                        userName: "tshaw",
+                    },
+                },
+                order: {
+                    name: "ASC",
+                    id: "DESC",
+                },
+                skip: 5,
+                take: 10,
+                cache: true,
+            })
+            
+            */
             new LogController().create(req, res, 'read user');
-            return res.status(201).json({data});
+            return res.status(201).json({ data });
         } catch (error) {
             return res.status(500).json({ message: "Internal Server Error" });
         }

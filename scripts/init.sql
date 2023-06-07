@@ -6,7 +6,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- DROP TABLE IF EXISTS public.roles;
 
 CREATE TABLE IF NOT EXISTS public.roles
-(
+(   
     id uuid NOT NULL DEFAULT uuid_generate_v4(),
     role character varying COLLATE pg_catalog."default" NOT NULL,
     "createdDate" timestamp without time zone NOT NULL DEFAULT now(),

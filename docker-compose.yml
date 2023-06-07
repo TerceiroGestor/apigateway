@@ -1,14 +1,12 @@
 version: '3'
 services:
-  apigateway:
-    extends:
-      file: docker/docker-compose.api.yml
-      service: apigateway
   database:
     extends:
       file: docker/docker-compose.database.yml
       service: database
-
+  apigateway:
+    extends:
+      file: docker/docker-compose.api.yml
+      service: apigateway
 networks:
-  main-network:  
-   
+  main-network:
