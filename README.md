@@ -4,7 +4,7 @@ O API Gateway nada mais é do que um gerenciador de tráfego que faz a interface
 
 ## Weverton Campos
 
-<details><summary>26/05/2023</summary>
+<details><summary>26/05/2023 - Estudo das Tecnologias</summary>
 
 - Estudo do TypeScript
 - Estudo do TypeORM
@@ -19,7 +19,7 @@ O API Gateway nada mais é do que um gerenciador de tráfego que faz a interface
 
 </details>
 
-<details><summary>05/06/2023</summary>
+<details><summary>05/06/2023 - Estudo do Docker</summary>
 
 - Configuração do docker-compose
   - utilizando network para comunicar api com database
@@ -27,7 +27,7 @@ O API Gateway nada mais é do que um gerenciador de tráfego que faz a interface
 
 </details>
 
-<details><summary>06/06/2023</summary>
+<details><summary>06/06/2023 - Definindo a Estrutura de Desenvolvimento</summary>
 
 - Definindo a estrutura
 - Configurando um Banco de Dados online para iniciar os testes da estrutura
