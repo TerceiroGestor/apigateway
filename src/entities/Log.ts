@@ -17,17 +17,17 @@ export class Log {
     clientinfo: string | undefined
 
     @Column({type: 'json', nullable: true})
-    methodinfo: string | undefined
+    request: string | undefined
 
     @Column({type: 'json', nullable: true})
     action: string | undefined
 
     @CreateDateColumn()
-    createdDate: Date | undefined
+    created: Date | undefined
     @UpdateDateColumn()
-    updatedDate: Date | undefined
+    updated: Date | undefined
     @DeleteDateColumn()
-    deletedDate: Date | undefined
+    deletedAt: Date | undefined
     @VersionColumn()
     version: number | undefined
 }

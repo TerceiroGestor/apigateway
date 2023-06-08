@@ -4,7 +4,7 @@ import { XMLHttpRequest } from 'xmlhttprequest-ts';
 
 export class LogController {
 
-    async find(req: Request, res: Response) {
+    async read(req: Request, res: Response) {
         try {
 
             const data = await logRepository.find();
@@ -15,7 +15,7 @@ export class LogController {
         }
     }
 
-    async findOne(req: Request, res: Response) {
+    async nfindOe(req: Request, res: Response) {
         try {
             
             const data = await logRepository.findOneBy({
@@ -27,7 +27,7 @@ export class LogController {
         }
     }
 
-    async create(req: Request, res: Response, action: string) {
+    async create(req: Request, res: Response, request: string) {
 
         const header = req.headers; // header["x-forwarded-for"]
         const route = `http://ip-api.com/json/${header["x-forwarded-for"]}`; //http://ip-api.com/json/{query}
@@ -37,8 +37,7 @@ export class LogController {
         xhr.onload = async function () {
             const data = logRepository.create({
                 "clientinfo": xhr.responseText,
-                "methodinfo": req.method,
-                "action": action
+                "request": request
             });
             await logRepository.save(data);
             return data;

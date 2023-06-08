@@ -1,56 +1,86 @@
 import { Request, Response } from "express";
+import fetch from 'node-fetch';
 import { LogController } from "./LogController";
 
 export class RegisterController {
 
-    async read(req: Request, res: Response) {
-
-        //acess service
-
-        // Aqui você pode fazer uma requisição para o serviço desejado e retornar a resposta
-        // Exemplo:
-        // axios.get('https://servico.com/api/dados')
-        //   .then(response => res.json(response.data))
-        //   .catch(error => res.status(500).json({ error: 'Internal Server Error' }));
-        return res.json('Route Register Method GET')
-    }
-
     async create(req: Request, res: Response) {
 
-        //acess service
+        try {
+            const response = await fetch(process.env.SERVICE_REGISTER || '', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(req.body)
+            });
 
-        // Aqui você pode fazer uma requisição para o serviço desejado e retornar a resposta
-        // Exemplo:
-        // axios.get('https://servico.com/api/dados')
-        //   .then(response => res.json(response.data))
-        //   .catch(error => res.status(500).json({ error: 'Internal Server Error' }));
+            const data = await response.json();
+            new LogController().create(req, res, data);
+            res.json(data);
+            
+        } catch (error) {
+            res.json(error);
+        }
+    }
 
-        return res.json('Route Register Method POST')
+    async read(req: Request, res: Response) {
+
+        try {
+            const response = await fetch(process.env.SERVICE_REGISTER || '', {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+              }
+            });
+      
+            const data = await response.json();
+            new LogController().create(req, res, data);
+            res.json(data);
+            
+        } catch (error) {
+            res.json(error);
+        }
     }
 
     async update(req: Request, res: Response) {
 
-        //acess service
-
-        // Aqui você pode fazer uma requisição para o serviço desejado e retornar a resposta
-        // Exemplo:
-        // axios.get('https://servico.com/api/dados')
-        //   .then(response => res.json(response.data))
-        //   .catch(error => res.status(500).json({ error: 'Internal Server Error' }));
-
-        return res.json('Route Register Method PUT')
+        try {
+            const response = await fetch(process.env.SERVICE_REGISTER || '', {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(req.body)
+            });
+      
+            const data = await response.json();
+            new LogController().create(req, res, data);
+            res.json(data);
+            
+        } catch (error) {
+            res.json(error);
+        }
     }
 
     async delete(req: Request, res: Response) {
 
-        //acess service
-
-        // Aqui você pode fazer uma requisição para o serviço desejado e retornar a resposta
-        // Exemplo:
-        // axios.get('https://servico.com/api/dados')
-        //   .then(response => res.json(response.data))
-        //   .catch(error => res.status(500).json({ error: 'Internal Server Error' }));
-
-        return res.json('Route Register Method DELETE')
+        try {
+            const response = await fetch(process.env.SERVICE_REGISTER || '', {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(req.body)
+            });
+      
+            const data = await response.json();
+            new LogController().create(req, res, data);
+            res.json(data);
+            
+        } catch (error) {
+            //new LogController().create(req, res, error.json());
+            res.json(error);
+        }
     }
 }
