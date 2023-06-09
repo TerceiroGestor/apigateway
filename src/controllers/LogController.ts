@@ -1,4 +1,4 @@
-import { Request, Response, response } from "express";
+import { Request, Response } from "express";
 import { logRepository } from "../repositories/logRepository";
 import { XMLHttpRequest } from 'xmlhttprequest-ts';
 
@@ -8,14 +8,14 @@ export class LogController {
         try {
 
             const data = await logRepository.find();
-            return res.status(201).json({data});
+            res.status(201).json({data});
 
         } catch (error) {
-            return res.status(500).json({ message: "Internal Server Error" });
+            return res.status(500).json(error);
         }
     }
 
-    async nfindOe(req: Request, res: Response) {
+    async findOe(req: Request, res: Response) {
         try {
             
             const data = await logRepository.findOneBy({
@@ -36,8 +36,8 @@ export class LogController {
         xhr.send();
         xhr.onload = async function () {
             const data = logRepository.create({
-                "clientinfo": xhr.responseText,
-                "request": request
+                "customerInfo": xhr.responseText,
+                "requestInfo": request
             });
             await logRepository.save(data);
             return data;

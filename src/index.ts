@@ -2,7 +2,6 @@ import express, { Request, Response, NextFunction } from 'express';
 import 'dotenv/config'
 import { AppDataSource } from './data-source';
 import routes from "./routes";
-import jwt from 'jsonwebtoken';
 
 AppDataSource.initialize()
   .then(() => {

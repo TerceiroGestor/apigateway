@@ -1,16 +1,16 @@
-import { 
-    Entity, 
-    PrimaryGeneratedColumn, 
+import {
+    Entity,
+    PrimaryGeneratedColumn,
     Column,
-    OneToOne,
-    JoinColumn,
-    CreateDateColumn, 
-    UpdateDateColumn, 
-    DeleteDateColumn, 
-    VersionColumn 
+    OneToMany,
+    CreateDateColumn,
+    UpdateDateColumn,
+    DeleteDateColumn,
+    VersionColumn
 } from "typeorm";
 
-import { Role } from "./Role"
+import { Login } from './Login';
+import { Log } from './Log';
 
 @Entity('users')
 
@@ -18,22 +18,40 @@ export class User {
     @PrimaryGeneratedColumn("uuid")
     id: string | undefined
 
-    @OneToOne(() => Role, role => role.user)
-    @JoinColumn({name: 'role_id'})
-    role: Role | undefined
+    @Column({ type: "varchar", nullable: false })
+    firebase_uid: string | undefined;
+    
+    @Column({ type: "varchar", nullable: false })
+    name: string | undefined
 
-    @Column({type: "varchar", nullable: false })
-    firstName: string | undefined
+    @Column({ type: "varchar", nullable: false })
+    social_name: string | undefined
 
-    @Column({type: "varchar", nullable: false })
-    lastName: string | undefined
+    @Column({ type: "varchar", nullable: false })
+    lastname: string | undefined
+
+    @Column({ type: "varchar", nullable: false })
+    email: string | undefined
+
+    @Column({ type: "varchar", nullable: false })
+    password: string | undefined
+
+    @Column({ type: "date", nullable: false })
+    birth: Date | undefined
 
     @CreateDateColumn()
-    createdDate: Date | undefined
+    created: Date | undefined
     @UpdateDateColumn()
-    updatedDate: Date | undefined
+    updated: Date | undefined
     @DeleteDateColumn()
-    deletedDate: Date | undefined
+    deleted: Date | undefined
     @VersionColumn()
     version: number | undefined
+
+    // relationship
+    @OneToMany(() => Login, login => login.user)
+    logins: Login[] | undefined;
+  
+    @OneToMany(() => Log, log => log.user)
+    logs: Log[] | undefined;
 }

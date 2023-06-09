@@ -1,86 +1,69 @@
 import { Request, Response } from "express";
-import fetch from 'node-fetch';
+import { auth } from "../auth/firebaseConfig";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+
 import { LogController } from "./LogController";
+import { userRepository } from "../repositories/userRepository";
+import { loginRepository } from "../repositories/loginRepository";
+
+import jwt from 'jsonwebtoken';
 
 export class RegisterController {
 
-    async create(req: Request, res: Response) {
+  async create(req: Request, res: Response) {
 
-        try {
-            const response = await fetch(process.env.SERVICE_REGISTER || '', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(req.body)
-            });
 
-            const data = await response.json();
-            new LogController().create(req, res, data);
-            res.json(data);
-            
-        } catch (error) {
-            res.json(error);
+    const { name, email, password } = req.body;
+
+    // Ao realizar o cadastro o firebase já realiza login automático.
+    //https://firebase.google.com/docs/reference/node/firebase.auth.Auth#createuserwithemailandpassword
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(async (userCredential) => {
+        const credential = userCredential.user;
+        const user = userRepository.create({
+          "name": name,
+          "email": email,
+          "password": password,
+          "firebase_uid": credential.uid
+        });
+        await userRepository.save(user);
+
+        const payload = { 
+          "id": user.id,
+          "name": user.name,
+          "email": user.email
         }
-    }
 
-    async read(req: Request, res: Response) {
+        const token = jwt.sign(payload, 'secretKey', {expiresIn: '1h'});
 
-        try {
-            const response = await fetch(process.env.SERVICE_REGISTER || '', {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-              }
-            });
-      
-            const data = await response.json();
-            new LogController().create(req, res, data);
-            res.json(data);
-            
-        } catch (error) {
-            res.json(error);
-        }
-    }
+        const login = loginRepository.create({
+          "user_id": user.id,
+          "email": user.email,
+          "firebase_uid": user.firebase_uid,
+          "emailVerified": credential.emailVerified,
+          "accessToken": token
+          //expirationTime
+        });
+        
+        await loginRepository.save(login);
 
-    async update(req: Request, res: Response) {
+        res.status(201).json({credential, user, login});
+      })
+      .catch((error) => {
+        res.status(500).json(error);
+      });
 
-        try {
-            const response = await fetch(process.env.SERVICE_REGISTER || '', {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(req.body)
-            });
-      
-            const data = await response.json();
-            new LogController().create(req, res, data);
-            res.json(data);
-            
-        } catch (error) {
-            res.json(error);
-        }
-    }
+  }
 
-    async delete(req: Request, res: Response) {
+  async read(req: Request, res: Response) {
+    res.status(200).json({ message: "GET register" });
+  }
 
-        try {
-            const response = await fetch(process.env.SERVICE_REGISTER || '', {
-              method: 'DELETE',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(req.body)
-            });
-      
-            const data = await response.json();
-            new LogController().create(req, res, data);
-            res.json(data);
-            
-        } catch (error) {
-            //new LogController().create(req, res, error.json());
-            res.json(error);
-        }
-    }
+  async update(req: Request, res: Response) {
+
+  }
+
+  async delete(req: Request, res: Response) {
+
+  }
 }
