@@ -2,6 +2,10 @@
 
 O API Gateway nada mais é do que um gerenciador de tráfego que faz a interface com o serviço de back-end real ou de dados.  Em seguida, aplica políticas, autenticação e controle de acesso geral para chamadas de APIs, com o objetivo de proteger dados sigilosos e importantes.
 
+<hr>
+
+<details><summary>Histórico de Desenvolvimento</summary>
+
 <details><summary>26/05/2023 - Estudo das Tecnologias</summary>
 
 - Estudo do TypeScript
@@ -16,6 +20,7 @@ O API Gateway nada mais é do que um gerenciador de tráfego que faz a interface
   - teste de relações
 
 </details>
+
 
 <details><summary>05/06/2023 - Estudo do Docker</summary>
 
@@ -83,6 +88,8 @@ O API Gateway nada mais é do que um gerenciador de tráfego que faz a interface
 
 - Para realizar o teste de comunicação com a API Gateway foi criado uma rota 'main' para testar todos os metodos e as respostas para verficiar se a API está recebendo o 'Authorization','body', 'params'.
 - Para realizar os teste acesse o link abaixo
+
+</details>
 
 </details>
 
