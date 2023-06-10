@@ -95,7 +95,7 @@ O API Gateway nada mais é do que um gerenciador de tráfego que faz a interface
 
 <hr>
 
-[DOCUMENTAÇÃO](document.md)
+[DOCUMENTAÇÃO](doc/document.md)
 <hr>
 
 <details><summary>PRÓXIMAS ETAPAS</summary>
