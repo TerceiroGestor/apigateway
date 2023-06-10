@@ -16,7 +16,7 @@ CREATE TABLE "users" (
 
 CREATE TABLE "logins" (
   "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-  "user_id" uuid UNIQUE,
+  "user_id" uuid,
   "firebase_uid" varchar,
   "email" varchar,
   "emailVerified" boolean,
@@ -32,7 +32,7 @@ CREATE TABLE "logins" (
 
 CREATE TABLE "logs" (
   "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-  "user_id" uuid UNIQUE,
+  "user_id" uuid,
   "customerInfo" json,
   "requestInfo" json,
   "created" timestamp without time zone NOT NULL DEFAULT now(),

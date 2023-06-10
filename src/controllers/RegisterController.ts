@@ -1,53 +1,26 @@
 import { Request, Response } from "express";
 import { auth } from "../auth/firebaseConfig";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, deleteUser, getAuth, sendPasswordResetEmail } from "firebase/auth";
 
 import { LogController } from "./LogController";
-import { userRepository } from "../repositories/userRepository";
-import { loginRepository } from "../repositories/loginRepository";
-
-import jwt from 'jsonwebtoken';
+import { UserController } from "./UserController";
 
 export class RegisterController {
 
+  /**
+   * @param req 
+   * @param res
+   * @returns json
+   * @link //https://firebase.google.com/docs/reference/node/firebase.auth.Auth#createuserwithemailandpassword
+   */
   async create(req: Request, res: Response) {
 
-
-    const { name, email, password } = req.body;
-
-    // Ao realizar o cadastro o firebase já realiza login automático.
-    //https://firebase.google.com/docs/reference/node/firebase.auth.Auth#createuserwithemailandpassword
-    createUserWithEmailAndPassword(auth, email, password)
+    createUserWithEmailAndPassword(auth, req.body.email, req.body.password)
       .then(async (userCredential) => {
+
         const credential = userCredential.user;
-        const user = userRepository.create({
-          "name": name,
-          "email": email,
-          "password": password,
-          "firebase_uid": credential.uid
-        });
-        await userRepository.save(user);
+        const user = await new UserController().create(req, res, credential);
 
-        const payload = { 
-          "id": user.id,
-          "name": user.name,
-          "email": user.email
-        }
-
-        const token = jwt.sign(payload, 'secretKey', {expiresIn: '1h'});
-
-        const login = loginRepository.create({
-          "user_id": user.id,
-          "email": user.email,
-          "firebase_uid": user.firebase_uid,
-          "emailVerified": credential.emailVerified,
-          "accessToken": token
-          //expirationTime
-        });
-        
-        await loginRepository.save(login);
-
-        res.status(201).json({credential, user, login});
       })
       .catch((error) => {
         res.status(500).json(error);
@@ -55,15 +28,41 @@ export class RegisterController {
 
   }
 
-  async read(req: Request, res: Response) {
-    res.status(200).json({ message: "GET register" });
-  }
-
-  async update(req: Request, res: Response) {
-
-  }
-
   async delete(req: Request, res: Response) {
+    const user = auth.currentUser;
+    if (user) {
+      deleteUser(user)
+        .then(() => {
+          return true
+        })
+        .catch((error) => {
+          res.status(404).json(error);
+        });
+    } else {
+      res.status(404).json({ message: 'Not data' });
+    }
+  }
 
+  // Finalizar
+  async sendVerificationEmail(req: Request, res: Response) {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    try {
+      const data = '' // await sendEmailVerification(user);
+      res.status(201).json(data);
+    } catch (error) {
+      res.status(201).json(error);
+    }
+  }
+
+  // Finalizar
+  async sendEmailResetPassword(req: Request, res: Response) {
+    const auth = getAuth();
+    try {
+      const data = await sendPasswordResetEmail(auth, req.body.email);
+      res.status(201).json(data);
+    } catch (error) {
+      res.status(201).json(error);
+    }
   }
 }

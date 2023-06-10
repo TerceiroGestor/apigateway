@@ -1,33 +1,38 @@
 import { Request, Response } from "express";
 import { logRepository } from "../repositories/logRepository";
 import { XMLHttpRequest } from 'xmlhttprequest-ts';
+import { UUID } from "typeorm/driver/mongodb/bson.typings";
 
 export class LogController {
 
     async read(req: Request, res: Response) {
         try {
 
-            const data = await logRepository.find();
-            res.status(201).json({data});
+            const data = await logRepository.find({
+                order: {
+                  created: 'DESC'
+                }
+              });
+            res.status(201).json({ data });
 
         } catch (error) {
             return res.status(500).json(error);
         }
     }
 
-    async findOe(req: Request, res: Response) {
+    async findOne(req: Request, res: Response) {
         try {
-            
+
             const data = await logRepository.findOneBy({
                 id: req.body.id //* req.params.id */
             });
-            return res.status(201).json({data});
+            return res.status(201).json({ data });
         } catch (error) {
             return res.status(500).json({ message: "Internal Server Error" });
         }
     }
 
-    async create(req: Request, res: Response, request: string) {
+    async create(req: Request, res: Response, user: any, request: any) {
 
         const header = req.headers; // header["x-forwarded-for"]
         const route = `http://ip-api.com/json/${header["x-forwarded-for"]}`; //http://ip-api.com/json/{query}
@@ -36,6 +41,7 @@ export class LogController {
         xhr.send();
         xhr.onload = async function () {
             const data = logRepository.create({
+                "user_id": user.id,
                 "customerInfo": xhr.responseText,
                 "requestInfo": request
             });
@@ -43,8 +49,4 @@ export class LogController {
             return data;
         };
     }
-}
-
-function fetch(arg0: string) {
-    throw new Error("Function not implemented.");
 }

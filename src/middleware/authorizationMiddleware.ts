@@ -1,11 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 
-function authorizationMiddleware(req: Request, res: Response, next: NextFunction) {
-  // Adicione o cabeçalho personalizado
-  res.setHeader('X-Meu-Middleware', 'Valor personalizado');
+async function authorizationMiddleware(req: Request, res: Response, next: NextFunction) {
+  const authorization = true;
 
-  // Chame o próximo middleware
-  next();
+  if(authorization){
+    next();
+  }else{
+    res.status(500).json({message:'Not autorization'})
+  }
+  
 }
 
 export default authorizationMiddleware;

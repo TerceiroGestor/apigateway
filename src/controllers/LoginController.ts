@@ -1,7 +1,12 @@
 import { Request, Response } from "express";
+
 import { loginRepository } from "../repositories/loginRepository";
+import { userRepository } from "../repositories/userRepository";
+
+import { LogController } from "./LogController";
+
 import { auth } from "../auth/firebaseConfig";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 
 export class LoginController {
 
@@ -11,9 +16,24 @@ export class LoginController {
 
         // https://firebase.google.com/docs/reference/node/firebase.auth.Auth#signinwithemailandpassword
         signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
+            .then(async (userCredential) => {
+
+                //refatorar
+                const user = await userRepository.findOneBy({firebase_uid: userCredential.user.uid });
+
+                const login = loginRepository.create({
+                    "email": userCredential.user.email?.toString(),
+                    "firebase_uid": userCredential.user.uid,
+                    "emailVerified": userCredential.user.emailVerified,
+                    "accessToken": await userCredential.user.getIdToken(),
+                    "user_id": user?.id
+                });
+
+                await loginRepository.save(login);
+
+                new LogController().create(req, res, user, {message: 'User signIn'});
                 // Signed in
-                res.status(201).json(userCredential.user);
+                res.status(201).json(login);
                 // ...
             })
             .catch((error) => {
@@ -22,20 +42,33 @@ export class LoginController {
     }
 
     async signOut(req: Request, res: Response) {
-        const user = auth.signOut()
-        res.status(201).json(user);
+
+        signOut(auth)
+            .then(() => {
+                new LogController().create(req, res, auth, {message: 'User signOut'});
+                res.status(200).json({ message: "singOut" });
+            })
+            .catch((error) => {
+                res.status(500).json(error);
+            })
     }
 
-    async read(req: Request, res: Response) {
-        try {
+    async signInState(req: Request, res: Response) {
+        if (auth.currentUser) {
 
-            const data = await loginRepository.find({
-                relations: ['user']
-            });
-            res.status(201).json({data});
+          const firebase = {
+            uid: auth.currentUser.uid,
+            email: auth.currentUser.email,
+            accessToken: await auth.currentUser.getIdToken()
+          };
 
-        } catch (error) {
-            return res.status(500).json(error);
+          const login = await loginRepository.findOneBy({firebase_uid: auth.currentUser.uid})
+          const user = await userRepository.findOneBy({firebase_uid: auth.currentUser.uid})
+
+          new LogController().create(req, res, user, {message: 'User signInState'});
+          res.status(200).json({firebase, login, user});
+        } else {
+          res.status(500).json({ message: 'No authenticated user.' });
         }
     }
 }

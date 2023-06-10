@@ -16,6 +16,9 @@ export class Log {
     @PrimaryGeneratedColumn("uuid")
     id: string | undefined;
 
+    @Column('uuid', { unique: false })
+    user_id: string | undefined
+
     @Column({ type: 'json', nullable: true })
     customerInfo: string | undefined
 

@@ -17,7 +17,7 @@ export class Login {
     @PrimaryGeneratedColumn('uuid')
     id: string | undefined;
 
-    @Column('uuid', { unique: true })
+    @Column('uuid', { unique: false })
     user_id: string | undefined
 
     @Column({ type: "varchar", nullable: false })
