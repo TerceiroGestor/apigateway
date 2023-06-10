@@ -65,6 +65,8 @@ O API Gateway nada mais é do que um gerenciador de tráfego que faz a interface
 
 - Serviço de resgitro
 - Definido endpoint principal
+- Registro de Log
+- Registro de Login
 
     ```typescript
       import fetch from 'node-fetch';
