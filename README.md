@@ -82,9 +82,15 @@ O API Gateway nada mais é do que um gerenciador de tráfego que faz a interface
     ```
 
 - Para realizar o teste de comunicação com a API Gateway foi criado uma rota 'main' para testar todos os metodos e as respostas para verficiar se a API está recebendo o 'Authorization','body', 'params'.
-- Para realizar esse teste veja o a documentação: 
+- Para realizar os teste acesse o link abaixo
 
 </details>
+
+<hr>
+
+[ENDPOINT DOCUMENTAÇÃO]('https://github.com/TerceiroGestor/apigateway/blob/main/doc/document.md')
+
+<hr>
 
 <details><summary>PRÓXIMAS ETAPAS</summary>
 
@@ -94,3 +100,5 @@ O API Gateway nada mais é do que um gerenciador de tráfego que faz a interface
   - Update password
 
 </details>
+
+<hr>
