@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+/* import { Request, Response } from "express";
 import fetch from 'node-fetch';
 import { LogController } from "./LogController";
 
@@ -83,4 +83,4 @@ export class RegisterController {
             res.json(error);
         }
     }
-}
+} */
