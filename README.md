@@ -1,4 +1,4 @@
-# API Gateway 
+# API Gateway
 
 O API Gateway nada mais é do que um gerenciador de tráfego que faz a interface com o serviço de back-end real ou de dados.  Em seguida, aplica políticas, autenticação e controle de acesso geral para chamadas de APIs, com o objetivo de proteger dados sigilosos e importantes.
 
@@ -31,7 +31,8 @@ O API Gateway nada mais é do que um gerenciador de tráfego que faz a interface
 - Configurando um Banco de Dados online para iniciar os testes da estrutura
 - Definido a estrutura de API Gateway com os Serviços
 - Definido o endpoint principal para o FrontEnd
-  - Exemplo de endpoint: https://terceirogestor/api/{service}, com os dados no corpo da requisição, pode usar por exemplo o "AXIOS" para fazer esta requisição:
+  - Exemplo de endpoint: <https://terceirogestor/api/{service}>, com os dados no corpo da requisição, pode usar por exemplo o "AXIOS" para fazer esta requisição:
+
     ```javascript
     const data = {
       nome: 'Exemplo',
@@ -50,22 +51,46 @@ O API Gateway nada mais é do que um gerenciador de tráfego que faz a interface
       console.error(error);
     });
     ```
+
   - Com esse endpoint o API Gateway consegue enter o serviço que está sendo requisitado, e por meio da rota depois de fazer a autenticação e verificar a autorização faz outra requisição para o serviço e essim retorna a resposta.
+
+</details>
+
+<details><summary>10/06/2023 - API Gateway - Register</summary>
+
+- Serviço de resgitro
+- Definido endpoint principal
+
+    ```typescript
+      import fetch from 'node-fetch';
+
+      await fetch('https://apigateway-production.up.railway.app/api', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer <token>'
+                },
+                body: JSON.stringify({
+                  name: "name",
+                  email:"email",
+                  password:"password",
+                  id: "uuid", //390e2296-7500-4f2f-83b2-bbf99e2308f8
+                  firebase_uid: "firebase_uid" // PpSrODvJ2HVV7WRZuMaUMYOnaSN2
+                })
+            }
+          );
+    ```
+
+- Para realizar o teste de comunicação com a API Gateway foi criado uma rota 'main' para testar todos os metodos e as respostas para verficiar se a API está recebendo o 'Authorization','body', 'params'.
+- Para realizar esse teste veja o a documentação: 
 
 </details>
 
 <details><summary>PRÓXIMAS ETAPAS</summary>
 
-- Iniciar a construção completa
-  - Cadastrar no Firebase
-  - Reorganizar a API Gateway
-  - Criar os primeiros serviços
-    - Register
-    - Login
-  - Refatorar a API Gateway para validar a estrutura
-  - Criar os outros serviços
-    - Organização
-    - Registro de frota
-    - Doções    
+- Finalizar o REGISTER
+  - Autenticação via Google
+  - Verificação de email
+  - Update password
 
 </details>

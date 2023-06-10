@@ -45,6 +45,8 @@ export class LoginController {
 
         signOut(auth)
             .then(() => {
+
+                // Corrigir auth não tem informações de usuário para gerar log
                 new LogController().create(req, res, auth, {message: 'User signOut'});
                 res.status(200).json({ message: "singOut" });
             })

@@ -17,7 +17,7 @@ import { UserController } from './controllers/UserController';
 const routes = Router();
 
 //Main
-routes.route('/')
+routes.route('/:item?/:value?')
   .post(new MainController().create)
   .get(new MainController().read)
   .put(new MainController().update)
