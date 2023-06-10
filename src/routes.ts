@@ -1,6 +1,6 @@
 //Library
-import { Router } from 'express';
-import { Request, Response } from "express";
+import { Router, Request, Response } from "express";
+import listEndpoints from 'express-list-endpoints';
 
 //Middleware
 import authenticationMiddleware from './middleware/authenticationMiddleware';
@@ -13,16 +13,20 @@ import { LoginController } from './controllers/LoginController';
 import { LogController } from './controllers/LogController';
 import { UserController } from './controllers/UserController';
 
-
 const routes = Router();
 
 //Main
+routes.get('/endpoints', (req: Request, res: Response) => {
+  const endpoints = listEndpoints(routes as any);
+  res.json(endpoints);
+});
+
 routes.route('/:item?/:value?')
   .post(new MainController().create)
   .get(new MainController().read)
   .put(new MainController().update)
   .delete(new MainController().delete)
-  
+
 //Services Register
 routes.route('/register')
   .post(new RegisterController().create) // register in firebase and database

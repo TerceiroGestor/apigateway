@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { LogController } from "./LogController";
 
+
+
 export class MainController {
 
     async create(req: Request, res: Response) {
@@ -44,7 +46,7 @@ export class MainController {
     }
 
     async delete(req: Request, res: Response) {
-        
+
         return res.json({
             'response': 'API Gateway',
             'method': 'DELETE',
@@ -52,5 +54,11 @@ export class MainController {
             'req': 'delete',
             'body': req.body  
         })
+    }
+
+    async endpoint(req: Request, res: Response){
+        const listEndpoints = require('express-list-endpoints')
+        let app = require('express')();
+        res.json(listEndpoints(app));
     }
 }

@@ -15,7 +15,7 @@ AppDataSource.initialize()
     //Correção do Railway
     const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
     const hostname = process.env.HOSTNAME || '0.0.0.0';
-    
+
     app.listen(port, hostname, () => {
       console.log('API Gateway running!');
     });
