@@ -99,7 +99,7 @@
 
 >Para realizar os testes utilize a rota [main]('https://apigateway-production.up.railway.app/api/') para testar todos os metodos e a envio de dados como Authorization, Body, Params. Veja o exemplo abaixo
 
-```json
+```javascript
     {
         "path": "https://apigateway-production.up.railway.app/api/:item?/:value?", //item(id, name...) e value
         "methods": [
