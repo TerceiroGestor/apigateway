@@ -4,7 +4,7 @@ O API Gateway nada mais é do que um gerenciador de tráfego que faz a interface
 
 <hr>
 
-<details><summary>Histórico de Desenvolvimento</summary>
+<details><summary>HISTÓRICO DE DESENVOLVIMENTO</summary>
 
 <details><summary>26/05/2023 - Estudo das Tecnologias</summary>
 
@@ -95,8 +95,7 @@ O API Gateway nada mais é do que um gerenciador de tráfego que faz a interface
 
 <hr>
 
-[ENDPOINT DOCUMENTAÇÃO]('https://github.com/TerceiroGestor/apigateway/blob/main/doc/document.md')
-
+[DOCUMENTAÇÃO](document.md)
 <hr>
 
 <details><summary>PRÓXIMAS ETAPAS</summary>
