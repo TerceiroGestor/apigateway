@@ -21,12 +21,6 @@ routes.get('/endpoints', (req: Request, res: Response) => {
   res.json(endpoints);
 });
 
-routes.route('/:item?/:value?')
-  .post(new MainController().create)
-  .get(new MainController().read)
-  .put(new MainController().update)
-  .delete(new MainController().delete)
-
 //Services Register
 routes.route('/register')
   .post(new RegisterController().create) // register in firebase and database
@@ -44,5 +38,11 @@ routes.route('/login')
 //routes.route('/trash/:param?');
 
 routes.get('/logs', authenticationMiddleware, authorizationMiddleware, new LogController().read);
+
+routes.route('/:item?/:value?')
+  .post(new MainController().create)
+  .get(new MainController().read)
+  .put(new MainController().update)
+  .delete(new MainController().delete)
 
 export default routes;
