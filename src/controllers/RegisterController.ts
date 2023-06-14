@@ -11,7 +11,8 @@ export class RegisterController {
    * @param req 
    * @param res
    * @returns json
-   * @link //https://firebase.google.com/docs/reference/node/firebase.auth.Auth#createuserwithemailandpassword
+   * @link https://firebase.google.com/docs/reference/node/firebase.auth.Auth#createuserwithemailandpassword
+   * @Doc https://firebase.google.com/docs/auth/web/google-signin?hl=pt-br
    */
   async create(req: Request, res: Response) {
 
