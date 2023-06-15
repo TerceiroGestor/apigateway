@@ -1,10 +1,11 @@
 import { Request, Response } from "express";
 import { auth } from "../auth/firebaseConfig";
-import { createUserWithEmailAndPassword, deleteUser, getAuth, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup, signInWithCredential, OAuthCredential } from "firebase/auth";
+import { createUserWithEmailAndPassword, deleteUser, sendPasswordResetEmail } from "firebase/auth";
 
 import { LogController } from "./LogController";
 import { UserController } from "./UserController";
-import { credential } from "firebase-admin";
+import * as admin from "firebase-admin";
+import { google } from 'googleapis';
 
 export class RegisterController {
 
@@ -72,37 +73,58 @@ export class RegisterController {
    * 
    * @param req 
    * @param res 
+   * @Doc https://developers.google.com/identity/oauth2/web/guides/overview?hl=pt-br
    * @Doc https://developers.google.com/identity/gsi/web/guides/display-button?hl=pt-br#javascript
    * @Console https://console.cloud.google.com/apis/credentials?project=terceiro-gestor&hl=pt-br&supportedpurview=project
    */
   async googleAuth(req: Request, res: Response) {
 
-    const provider = new GoogleAuthProvider();
-
-    const serviceCredentials = {
-      client_id: process.env.client_id,
-      client_secret: process.env.client_secret,
-      redirect_uris: process.env.redirect_uris,
-    };
-
-    const credential = OAuthCredential.fromJSON({
-      providerId: provider.providerId,
-      signInMethod: provider.providerId,
-      toJSON: () => serviceCredentials,
+    // Caminho para o arquivo JSON da conta de serviço
+    const serviceAccount = require('../auth/terceiro-gestor-auth-firebase-adminsdk-z46l4-f9a7d8bf0b.json');
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+      // Configuração do seu projeto do Firebase
+      // ...
     });
 
-    if (!credential) {
-      throw new Error('Failed to create OAuthCredential.');
-    }
-    //const provider = new GoogleAuthProvider();
-    signInWithCredential(auth, credential)
-    .then((result)=>{
-      res.status(201).json(result);
-    })
-    .catch((error)=>{
-      res.status(500).json(error);
+    const googleAuth = new google.auth.OAuth2(
+      process.env.client_id,
+      process.env.client_secret,
+      process.env.redirect_uris
+    );
+
+    const authUrl = googleAuth.generateAuthUrl({
+      access_type: 'offline',
+      scope: ['email', 'profile'],
     });
-    
+  
+    res.redirect(authUrl);
 
   }
+
+  async googleCallback(req: Request, res: Response) {
+    
+    const { code } = req.query;
+  
+    try {
+
+      const googleAuth = new google.auth.OAuth2(
+        process.env.client_id,
+        process.env.client_secret,
+        process.env.redirect_uris
+      );
+    
+      const { tokens } = await googleAuth.getToken(code as string);
+      const { id_token } = tokens;
+      //const firebaseUser = await admin.auth().
+  
+      // Aqui você pode retornar a resposta para o cliente ou fazer qualquer outra ação necessária
+      res.status(201).json(tokens);
+
+    } catch (error) {
+      console.error('Erro durante a autenticação:', error);
+      res.status(500).send('Erro durante a autenticação');
+    }
+  }
+  
 }

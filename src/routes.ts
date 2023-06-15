@@ -25,6 +25,9 @@ routes.get('/endpoints', (req: Request, res: Response) => {
 routes.route('/register')
   .get(new RegisterController().googleAuth) // register in firebase and database
 
+routes.route('/googleCallback')
+  .get(new RegisterController().googleCallback) // register in firebase and database
+
 routes.route('/user')
   .get(authenticationMiddleware, authorizationMiddleware, new UserController().read)
   .put(authenticationMiddleware, authorizationMiddleware, new UserController().update) // atualizações

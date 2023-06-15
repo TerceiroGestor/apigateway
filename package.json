@@ -22,6 +22,8 @@
     "express-list-endpoints": "^6.0.0",
     "firebase": "^9.22.2",
     "firebase-admin": "^11.9.0",
+    "google-auth-library": "^8.8.0",
+    "googleapis": "^118.0.0",
     "node-fetch": "^2.6.11",
     "pg": "^8.11.0",
     "reflect-metadata": "^0.1.13",
