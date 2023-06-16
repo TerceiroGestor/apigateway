@@ -6,6 +6,7 @@ import { LogController } from "./LogController";
 import { UserController } from "./UserController";
 import * as admin from "firebase-admin";
 import { google } from 'googleapis';
+import { googleAuth } from "../auth/firebaseAdmin";
 
 export class RegisterController {
 
@@ -78,34 +79,20 @@ export class RegisterController {
    * @Console https://console.cloud.google.com/apis/credentials?project=terceiro-gestor&hl=pt-br&supportedpurview=project
    */
   async googleAuth(req: Request, res: Response) {
-
-    // Caminho para o arquivo JSON da conta de serviço
-    const serviceAccount = require('../auth/terceiro-gestor-auth-firebase-adminsdk-z46l4-f9a7d8bf0b.json');
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-      // Configuração do seu projeto do Firebase
-      // ...
-    });
-
-    const googleAuth = new google.auth.OAuth2(
-      process.env.client_id,
-      process.env.client_secret,
-      process.env.redirect_uris
-    );
-
+    
     const authUrl = googleAuth.generateAuthUrl({
       access_type: 'offline',
       scope: ['email', 'profile'],
     });
-  
+
     res.redirect(authUrl);
 
   }
 
   async googleCallback(req: Request, res: Response) {
-    
+
     const { code } = req.query;
-  
+
     try {
 
       const googleAuth = new google.auth.OAuth2(
@@ -113,18 +100,23 @@ export class RegisterController {
         process.env.client_secret,
         process.env.redirect_uris
       );
-    
+
+      //const user = admin.auth.GoogleAuthProvider.credential(id_token)
       const { tokens } = await googleAuth.getToken(code as string);
-      const { id_token } = tokens;
+      const { id_token, access_token } = tokens;
+      const oauth2Client = new google.auth.OAuth2();
+      oauth2Client.setCredentials({ access_token });
+      const oauth2 = google.oauth2({ auth: oauth2Client, version: 'v2' });
+      const userInfo = await oauth2.userinfo.get();
       //const firebaseUser = await admin.auth().
-  
+
       // Aqui você pode retornar a resposta para o cliente ou fazer qualquer outra ação necessária
-      res.status(201).json(tokens);
+      res.status(201).json(userInfo);
 
     } catch (error) {
       console.error('Erro durante a autenticação:', error);
       res.status(500).send('Erro durante a autenticação');
     }
   }
-  
+
 }
