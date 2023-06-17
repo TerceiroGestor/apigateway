@@ -29,7 +29,7 @@ export class UserController {
                 })
             );
             
-            new LogController().create(req, res, data, {message: 'created user'});
+            new LogController().create(req, res, data, {message: 'register'});
             res.status(200).json(data);
 
         } catch (error) {

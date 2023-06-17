@@ -23,7 +23,13 @@ routes.get('/endpoints', (req: Request, res: Response) => {
 
 //Services Register
 routes.route('/register')
-  .post(new RegisterController().create) // register in firebase and database
+  .get(new RegisterController().create)
+  
+routes.route('/googleauth')
+  .get(new RegisterController().googleAuth)
+
+routes.route('/googlecallback')
+  .get(new RegisterController().googleCallback) // register in firebase and database
 
 routes.route('/user')
   .get(authenticationMiddleware, authorizationMiddleware, new UserController().read)
