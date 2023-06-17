@@ -24,7 +24,7 @@ export class MainController {
         })
     }
     async read(req: Request, res: Response) {
-
+        const data = req.header;
         return res.json({
             'response': 'API Gateway',
             'method': 'GET',

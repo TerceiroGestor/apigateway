@@ -29,7 +29,6 @@ export class RegisterController {
       .catch((error) => {
         res.status(500).json(error);
       });
-
   }
 
   async delete(req: Request, res: Response) {
