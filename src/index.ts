@@ -11,8 +11,8 @@ AppDataSource.initialize()
 
     app.use(cors({
       //origin: 'http://seu-front-end.com', // Domínio do seu front-end
-      //methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos HTTP permitidos
-      //allowedHeaders: ['Content-Type', 'Authorization'], // Cabeçalhos permitidos
+      methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos HTTP permitidos
+      allowedHeaders: ['Content-Type', 'Authorization'], // Cabeçalhos permitidos
     }));
     
     app.use(express.json());
