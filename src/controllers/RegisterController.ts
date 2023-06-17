@@ -107,7 +107,6 @@ export class RegisterController {
       oauth2Client.setCredentials({ access_token });
       const oauth2 = google.oauth2({ auth: oauth2Client, version: 'v2' });
       const userInfo = await oauth2.userinfo.get();
-      //const firebaseUser = await admin.auth().
 
       // Aqui você pode retornar a resposta para o cliente ou fazer qualquer outra ação necessária
       res.status(201).json(userInfo);
