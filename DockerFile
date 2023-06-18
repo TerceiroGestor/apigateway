@@ -8,13 +8,13 @@ WORKDIR /app
 COPY . /app
 
 # Instala as dependências do projeto
-RUN npm install --omit=dev
+RUN npm install
 
 # Copia todos os arquivos do diretório atual (que contém o Dockerfile) para o diretório de trabalho do contêiner
 COPY . .
 
 # Define o comando a ser executado quando o contêiner for iniciado
-CMD ["npm", "run", "start", " --omit=dev"]
+CMD ["npm", "run", "start"]
 # --max-old-space-size=300
 
 EXPOSE 3000
