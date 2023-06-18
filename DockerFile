@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Define o comando a ser executado quando o contêiner for iniciado
-CMD ["npm", "run", "start","--omit=dev"] 
+CMD ["npm", "run", "start","--omit=dev"]
 # --max-old-space-size=300
 
 EXPOSE 3000
