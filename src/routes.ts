@@ -23,7 +23,7 @@ routes.get('/endpoints', (req: Request, res: Response) => {
 
 //Services Register
 routes.route('/register')
-  .get(new RegisterController().create)
+  .post(new RegisterController().create)
   
 routes.route('/googleauth')
   .get(new RegisterController().googleAuth)
