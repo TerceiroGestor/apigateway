@@ -7,6 +7,8 @@ import { UserController } from "./UserController";
 import * as admin from "firebase-admin";
 import { google } from 'googleapis';
 import { googleAuth } from "../auth/firebaseAdmin";
+import { serialize } from 'cookie';
+
 
 export class RegisterController {
 
@@ -78,7 +80,7 @@ export class RegisterController {
    * @Console https://console.cloud.google.com/apis/credentials?project=terceiro-gestor&hl=pt-br&supportedpurview=project
    */
   async googleAuth(req: Request, res: Response) {
-    
+
     const authUrl = googleAuth.generateAuthUrl({
       access_type: 'offline',
       scope: ['email', 'profile'],
@@ -108,8 +110,17 @@ export class RegisterController {
       const oauth2 = google.oauth2({ auth: oauth2Client, version: 'v2' });
       const userInfo = await oauth2.userinfo.get();
 
+
+      // Serializa o token no formato de cookie
+      const cookieValue = serialize('token', '', {
+        httpOnly: true, // impede o acesso ao cookie pelo JavaScript do front-end
+        secure: true, // requer uma conexão HTTPS para enviar o cookie
+      });
+
+      // Envia o cookie na resposta do back-end
+      res.setHeader('Set-Cookie', cookieValue);
       // Aqui você pode retornar a resposta para o cliente ou fazer qualquer outra ação necessária
-      res.status(201).json(userInfo);
+      res.status(201).json();
 
     } catch (error) {
       console.error('Erro durante a autenticação:', error);
