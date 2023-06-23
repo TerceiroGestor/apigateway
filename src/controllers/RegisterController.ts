@@ -1,14 +1,12 @@
 import { Request, Response } from "express";
-import { auth } from "../auth/firebaseConfig";
-import { createUserWithEmailAndPassword, deleteUser, sendPasswordResetEmail } from "firebase/auth";
-
-import { LogController } from "./LogController";
 import { UserController } from "./UserController";
-import * as admin from "firebase-admin";
 import { google } from 'googleapis';
-import { googleAuth } from "../auth/firebaseAdmin";
+import { auth, googleAuth } from "../auth/firebaseAdmin";
 import { serialize } from 'cookie';
 
+//import { auth } from "../auth/firebaseConfig";
+//import { createUserWithEmailAndPassword, deleteUser, sendPasswordResetEmail } from "firebase/auth";
+//import * as admin from "firebase-admin";
 
 export class RegisterController {
 
@@ -21,7 +19,20 @@ export class RegisterController {
    */
   async create(req: Request, res: Response) {
 
-    createUserWithEmailAndPassword(auth, req.body.email, req.body.password)
+    auth.createUser({
+      email: req.body.email, 
+      password: req.body.password
+    })
+      .then(async (userCredential) => {
+
+        const credential = userCredential
+        const user = await new UserController().create(req, res, credential);
+
+      })
+      .catch((error) => {
+        console.error('Erro ao criar usuário:', error);
+      });
+    /* createUserWithEmailAndPassword(auth, req.body.email, req.body.password)
       .then(async (userCredential) => {
 
         const credential = userCredential.user;
@@ -30,11 +41,13 @@ export class RegisterController {
       })
       .catch((error) => {
         res.status(500).json(error);
-      });
+      }); */
   }
 
   async delete(req: Request, res: Response) {
-    const user = auth.currentUser;
+
+    auth.deleteUser(req.body.uid)
+    /* const user = auth.currentUser;
     if (user) {
       deleteUser(user)
         .then(() => {
@@ -45,30 +58,30 @@ export class RegisterController {
         });
     } else {
       res.status(404).json({ message: 'Not data' });
-    }
+    } */
   }
 
   // Finalizar
   async sendVerificationEmail(req: Request, res: Response) {
-    //const auth = getAuth();
-    const user = auth.currentUser;
+
+    /* const user = auth.currentUser;
     try {
       const data = '' // await sendEmailVerification(user);
       res.status(201).json(data);
     } catch (error) {
       res.status(201).json(error);
-    }
+    } */
   }
 
   // Finalizar
   async sendEmailResetPassword(req: Request, res: Response) {
     //const auth = getAuth();
-    try {
+    /* try {
       const data = await sendPasswordResetEmail(auth, req.body.email);
       res.status(201).json(data);
     } catch (error) {
       res.status(500).json(error);
-    }
+    } */
   }
 
   /**
@@ -104,23 +117,23 @@ export class RegisterController {
 
       //const user = admin.auth.GoogleAuthProvider.credential(id_token)
       const { tokens } = await googleAuth.getToken(code as string);
-      const { id_token, access_token } = tokens;
+      const { id_token, access_token, expiry_date, refresh_token } = tokens;
       const oauth2Client = new google.auth.OAuth2();
       oauth2Client.setCredentials({ access_token });
       const oauth2 = google.oauth2({ auth: oauth2Client, version: 'v2' });
       const userInfo = await oauth2.userinfo.get();
 
-
       // Serializa o token no formato de cookie
-      const cookieValue = serialize('token', '', {
+      const cookieValue = serialize('token', access_token || '', {
         httpOnly: true, // impede o acesso ao cookie pelo JavaScript do front-end
         secure: true, // requer uma conexão HTTPS para enviar o cookie
       });
 
       // Envia o cookie na resposta do back-end
       res.setHeader('Set-Cookie', cookieValue);
+
       // Aqui você pode retornar a resposta para o cliente ou fazer qualquer outra ação necessária
-      res.status(201).json();
+      res.status(201).json('Autenticado');
 
     } catch (error) {
       console.error('Erro durante a autenticação:', error);
@@ -128,4 +141,7 @@ export class RegisterController {
     }
   }
 
+  async googleLogout(req: Request, res: Response) {
+
+  }
 }

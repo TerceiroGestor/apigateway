@@ -24,7 +24,7 @@ export class UserController {
                 userRepository.create({
                     "firebase_uid": credential.uid,
                     "name": req.body.name,
-                    "email": req.body.email,
+                    "email": credential.email,
                     "password": await bcrypt.hash(req.body.password, await bcrypt.genSalt(10))
                 })
             );

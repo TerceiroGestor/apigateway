@@ -3,14 +3,18 @@ import { google } from 'googleapis';
 
 const serviceAccount = require('../credentials/terceiro-gestor-brasil-firebase-adminsdk-y9q9a-2a25df861c.json');
 admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
+  credential: admin.credential.cert(serviceAccount),
 });
 
-export const googleAuth = new google.auth.OAuth2(
-    process.env.client_id,
-    process.env.client_secret,
-    process.env.redirect_uris
+const auth = admin.auth();
+
+const googleAuth = new google.auth.OAuth2(
+  process.env.client_id,
+  process.env.client_secret,
+  process.env.redirect_uris
 );
+
+export { auth, googleAuth };
 
 
 
