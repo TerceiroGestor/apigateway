@@ -24,6 +24,7 @@ routes.get('/endpoints', (req: Request, res: Response) => {
 //Services Register
 routes.route('/register')
   .post(new RegisterController().create)
+  .delete(new RegisterController().delete)
   
 routes.route('/googleauth')
   .get(new RegisterController().googleAuth)

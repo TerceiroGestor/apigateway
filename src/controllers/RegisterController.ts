@@ -10,7 +10,7 @@ import { serialize } from 'cookie';
 
 export class RegisterController {
 
-  /**
+  /** OK
    * @param req 
    * @param res
    * @returns json
@@ -20,7 +20,7 @@ export class RegisterController {
   async create(req: Request, res: Response) {
 
     auth.createUser({
-      email: req.body.email, 
+      email: req.body.email,
       password: req.body.password
     })
       .then(async (userCredential) => {
@@ -44,9 +44,18 @@ export class RegisterController {
       }); */
   }
 
+  //OK
   async delete(req: Request, res: Response) {
 
-    auth.deleteUser(req.body.uid)
+    auth.deleteUser(req.body.firebase_uid).then((response) => {
+
+      // Corrigir auth não tem informações de usuário para gerar log
+      //new LogController().create(req, res, auth, { message: 'response signOut' });
+      res.status(200).json({ code: true, message: 'successfully deleted user' });
+    })
+      .catch((error) => {
+        res.status(500).json(error);
+      })
     /* const user = auth.currentUser;
     if (user) {
       deleteUser(user)
@@ -59,6 +68,27 @@ export class RegisterController {
     } else {
       res.status(404).json({ message: 'Not data' });
     } */
+  }
+
+  //Review
+  async update(req: Request, res: Response) {
+
+    auth.updateUser(req.body.firebase_uid, {
+      email: 'modifiedUser@example.com',
+      phoneNumber: '+11234567890',
+      emailVerified: true,
+      password: 'newPassword',
+      displayName: 'Jane Doe',
+      photoURL: 'http://www.example.com/12345678/photo.png',
+      disabled: true,
+    })
+      .then((userRecord) => {
+        // See the UserRecord reference doc for the contents of userRecord.
+        console.log('Successfully updated user', userRecord.toJSON());
+      })
+      .catch((error) => {
+        console.log('Error updating user:', error);
+      });
   }
 
   // Finalizar
