@@ -14,7 +14,7 @@ AppDataSource.initialize()
       methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos HTTP permitidos
       allowedHeaders: ['Content-Type', 'Authorization'], // Cabeçalhos permitidos
     }));
-    
+
     app.use(express.json());
 
     app.use('/api', routes);

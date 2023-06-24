@@ -1,6 +1,6 @@
-
+/* 
 import { initializeApp } from "firebase/app";
-import {getAuth } from "firebase/auth"; // https://firebase.google.com/docs/auth/web/start?authuser=0&hl=pt
+import {getAuth } from "firebase/auth";
 
 const firebaseApp = initializeApp({
   apiKey: process.env.apiKey,
@@ -12,5 +12,5 @@ const firebaseApp = initializeApp({
   measurementId: process.env.measurementId
 });
 
-export const auth = getAuth(firebaseApp);
+export const auth = getAuth(firebaseApp); */
 

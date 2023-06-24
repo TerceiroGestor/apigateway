@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import { UserController } from "./UserController";
 import { google } from 'googleapis';
 import { auth, googleAuth } from "../auth/firebaseAdmin";
-import { serialize } from 'cookie';
+import { request } from "http";
+
 
 //import { auth } from "../auth/firebaseConfig";
 //import { createUserWithEmailAndPassword, deleteUser, sendPasswordResetEmail } from "firebase/auth";
@@ -129,7 +130,9 @@ export class RegisterController {
       scope: ['email', 'profile'],
     });
 
-    res.redirect(authUrl);
+    res.status(200).json({
+      uri: authUrl
+    })
 
   }
 
@@ -153,17 +156,8 @@ export class RegisterController {
       const oauth2 = google.oauth2({ auth: oauth2Client, version: 'v2' });
       const userInfo = await oauth2.userinfo.get();
 
-      // Serializa o token no formato de cookie
-      const cookieValue = serialize('token', access_token || '', {
-        httpOnly: true, // impede o acesso ao cookie pelo JavaScript do front-end
-        secure: true, // requer uma conexão HTTPS para enviar o cookie
-      });
-
-      // Envia o cookie na resposta do back-end
-      res.setHeader('Set-Cookie', cookieValue);
-
-      // Aqui você pode retornar a resposta para o cliente ou fazer qualquer outra ação necessária
-      res.status(201).json('Autenticado');
+      // falta retornor os dados de autenticação para o frontend
+      res.redirect('http://localhost:3000/dashboard')
 
     } catch (error) {
       console.error('Erro durante a autenticação:', error);
