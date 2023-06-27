@@ -136,28 +136,23 @@ export class RegisterController {
 
   }
 
-  async googleCallback(req: Request, res: Response) {
 
-    const { code } = req.query;
+  //const user = admin.auth.GoogleAuthProvider.credential(id_token)
+
+  //const oauth2Client = new google.auth.OAuth2();
+  //oauth2Client.setCredentials({ access_token });
+  //const oauth2 = google.oauth2({ auth: oauth2Client, version: 'v2' });
+  //const userInfo = await oauth2.userinfo.get();
+
+  // falta retornor os dados de autenticação para o frontend
+  //res.redirect('http://localhost:3000/dashboard')
+  async googleCallback(req: Request, res: Response) {
 
     try {
 
-      const googleAuth = new google.auth.OAuth2(
-        process.env.client_id,
-        process.env.client_secret,
-        process.env.redirect_uris
-      );
-
-      //const user = admin.auth.GoogleAuthProvider.credential(id_token)
-      const { tokens } = await googleAuth.getToken(code as string);
+      const { tokens } = await googleAuth.getToken(req.body.code);
       const { id_token, access_token, expiry_date, refresh_token } = tokens;
-      const oauth2Client = new google.auth.OAuth2();
-      oauth2Client.setCredentials({ access_token });
-      const oauth2 = google.oauth2({ auth: oauth2Client, version: 'v2' });
-      const userInfo = await oauth2.userinfo.get();
-
-      // falta retornor os dados de autenticação para o frontend
-      res.redirect('http://localhost:3000/dashboard')
+      res.status(200).json({ token: access_token })
 
     } catch (error) {
       console.error('Erro durante a autenticação:', error);

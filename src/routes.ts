@@ -30,7 +30,7 @@ routes.route('/googleauth')
   .get(new RegisterController().googleAuth)
 
 routes.route('/googlecallback')
-  .get(new RegisterController().googleCallback) // register in firebase and database
+  .post(new RegisterController().googleCallback) // register in firebase and database
 
 routes.route('/user')
   .get(authenticationMiddleware, authorizationMiddleware, new UserController().read)
