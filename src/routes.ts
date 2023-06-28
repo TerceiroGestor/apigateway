@@ -30,17 +30,17 @@ routes.route('/googleauth')
   .get(new RegisterController().googleAuth)
 
 routes.route('/googlecallback')
-  .post(new RegisterController().googleCallback) // register in firebase and database
+  .post(new RegisterController().googleCallback)
 
 routes.route('/user')
   .get(authenticationMiddleware, authorizationMiddleware, new UserController().read)
-  .put(authenticationMiddleware, authorizationMiddleware, new UserController().update) // atualizações
-  .delete(authenticationMiddleware, authorizationMiddleware, new UserController().delete) // delete
+  .put(authenticationMiddleware, authorizationMiddleware, new UserController().update)
+  .delete(authenticationMiddleware, authorizationMiddleware, new UserController().delete)
 
 routes.route('/login')
-  .post(new LoginController().signIn) // OK
-  .get(authenticationMiddleware, authorizationMiddleware, new LoginController().signInState) // OK
-  .delete(authenticationMiddleware, authorizationMiddleware, new LoginController().signOut) // OK
+  .post(new LoginController().signIn)
+  .get(authenticationMiddleware, authorizationMiddleware, new LoginController().signInState)
+  .delete(authenticationMiddleware, authorizationMiddleware, new LoginController().signOut)
 
 //routes.route('/trash/:param?');
 
