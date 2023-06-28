@@ -1,7 +1,9 @@
 import * as admin from "firebase-admin";
 import { google } from 'googleapis';
 
-const serviceAccount = require('../credentials/terceiro-gestor-brasil-firebase-adminsdk-y9q9a-2a25df861c.json');
+//const serviceAccount = require('../credentials/terceiro-gestor-brasil-firebase-adminsdk-y9q9a-2a25df861c.json');
+
+const serviceAccount = JSON.parse(process.env.FIREBASE_CONFIG || '');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
