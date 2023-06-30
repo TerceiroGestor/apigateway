@@ -31,18 +31,8 @@ export class RegisterController {
 
       })
       .catch((error) => {
-        console.error('Erro ao criar usuário:', error);
+        res.status(500).json(error)
       });
-    /* createUserWithEmailAndPassword(auth, req.body.email, req.body.password)
-      .then(async (userCredential) => {
-
-        const credential = userCredential.user;
-        const user = await new UserController().create(req, res, credential);
-
-      })
-      .catch((error) => {
-        res.status(500).json(error);
-      }); */
   }
 
   //OK
