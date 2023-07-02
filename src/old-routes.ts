@@ -7,7 +7,7 @@ import authenticationMiddleware from './middleware/authenticationMiddleware';
 import authorizationMiddleware from './middleware/authorizationMiddleware';
 
 //Controllers
-import { MainController } from './controllers/MainController';
+
 import { RegisterController } from './controllers/RegisterController';
 import { LoginController } from './controllers/LoginController';
 import { LogController } from './controllers/LogController';
@@ -21,7 +21,7 @@ routes.get('/endpoints', (req: Request, res: Response) => {
   res.json(endpoints);
 });
 
-//Services Register
+
 routes.route('/register')
   .post(new RegisterController().create)
   .delete(new RegisterController().delete)

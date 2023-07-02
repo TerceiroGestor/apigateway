@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { loginRepository } from "../repositories/loginRepository";
 import { userRepository } from "../repositories/userRepository";
 import { LogController } from "./LogController";
-import { auth, googleAuth } from "../auth/firebaseAdmin";
+import { Admin } from "../auth/Admin";
 import { serialize } from 'cookie';
 
 //import { auth } from "../auth/firebaseConfig";
@@ -12,7 +12,7 @@ export class LoginController {
 
     async signIn(req: Request, res: Response) {
         //https://firebase.google.com/docs/auth/admin/manage-users?hl=pt-br
-        auth.getUser(req.body.firebase_uid).then((user) => {
+        Admin.getUser(req.body.firebase_uid).then((user) => {
 
             const data = user;
             // Corrigir auth não tem informações de usuário para gerar log

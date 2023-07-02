@@ -2,7 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 import { AppDataSource } from './data-source';
-import routes from "./routes";
+import routes from "./routes/Router";
 
 AppDataSource.initialize()
   .then(() => {

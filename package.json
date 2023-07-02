@@ -26,6 +26,7 @@
     "google-auth-library": "^8.8.0",
     "googleapis": "^118.0.0",
     "node-fetch": "^2.6.11",
+    "nodemailer": "^6.9.3",
     "pg": "^8.11.0",
     "reflect-metadata": "^0.1.13",
     "xmlhttprequest-ts": "^1.0.1"
@@ -40,6 +41,7 @@
     "@types/express-session": "^1.17.7",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "^20.2.4",
+    "@types/nodemailer": "^6.4.8",
     "body-parser": "^1.20.2",
     "jsonwebtoken": "^9.0.0",
     "nodemon": "^2.0.22",

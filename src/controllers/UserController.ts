@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
 import { LogController } from "./LogController";
-import { userRepository } from "../repositories/userRepository";
+import { UserService } from "../services/UserService";
 import { RegisterController } from "./RegisterController";
-
-import bcrypt from 'bcrypt';
+import { userRepository } from "../repositories/userRepository";
 
 export class UserController {
 
@@ -20,17 +19,10 @@ export class UserController {
 
         try {
 
-            const data = await userRepository.save(
-                userRepository.create({
-                    "firebase_uid": credential.uid,
-                    "name": req.body.name,
-                    "email": credential.email,
-                    "password": await bcrypt.hash(req.body.password, await bcrypt.genSalt(10))
-                })
-            );
-            
-            new LogController().create(req, res, data, {message: 'register'});
-            res.status(200).json(data);
+            const { name, email, password } = req.body;
+            new UserService().create(name)
+            //new LogController().create(req, res, data, {message: 'register'});
+            //res.status(200).json(data);
 
         } catch (error) {
             res.status(500).json(error);
