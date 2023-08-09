@@ -3,16 +3,52 @@ import { Admin } from "../auth/Admin";
 import { OAuth } from "../auth/OAuth";
 import { Email } from "../notifications/Email";
 import { verify } from "crypto";
+import { google } from "googleapis";
 
-export class RegisterController {
 
-  /** 
-   * @param req 
-   * @param res
-   * @returns json
-   * @link https://firebase.google.com/docs/reference/node/firebase.auth.Auth#createuserwithemailandpassword
-   * @Doc https://firebase.google.com/docs/auth/web/google-signin?hl=pt-br
-   */
+export class AuthController {
+
+    /**
+     * 
+     * @param req 
+     * @param res 
+     * @Doc https://developers.google.com/identity/oauth2/web/guides/overview?hl=pt-br
+     * @Doc https://developers.google.com/identity/gsi/web/guides/display-button?hl=pt-br#javascript
+     * @Console https://console.cloud.google.com/apis/credentials?project=terceiro-gestor&hl=pt-br&supportedpurview=project
+     */
+    async Auth(req: Request, res: Response) {
+
+        const authUrl = OAuth.generateAuthUrl({
+            access_type: 'offline',
+            scope: ['email', 'profile'],
+        });
+
+        res.status(200).json({
+            uri: authUrl
+        })
+
+    }
+
+    async Callback(req: Request, res: Response) {
+
+        try {
+
+            const code = req.query.code as string;
+            const { tokens } = await OAuth.getToken(code);
+            const { access_token } = tokens;
+            const user = await OAuth;
+            res.status(200).json({ token: access_token });
+
+        } catch (error) {
+            res.status(500).json(error);
+        }
+    }
+
+}
+
+
+/* 
+  
   async create(req: Request, res: Response) {
 
     const { email, password } = req.body;
@@ -108,7 +144,7 @@ export class RegisterController {
 
     Admin.updateUser(user.uid, data)
       .then((userRecord) => {
-        // See the UserRecord reference doc for the contents of userRecord.
+        
         res.status(200).json(userRecord);
       })
       .catch((error) => {
@@ -132,38 +168,5 @@ export class RegisterController {
     }
   }
 
-  /**
-   * 
-   * @param req 
-   * @param res 
-   * @Doc https://developers.google.com/identity/oauth2/web/guides/overview?hl=pt-br
-   * @Doc https://developers.google.com/identity/gsi/web/guides/display-button?hl=pt-br#javascript
-   * @Console https://console.cloud.google.com/apis/credentials?project=terceiro-gestor&hl=pt-br&supportedpurview=project
-   */
-  async googleAuth(req: Request, res: Response) {
 
-    const authUrl = OAuth.generateAuthUrl({
-      access_type: 'offline',
-      scope: ['email', 'profile'],
-    });
-
-    res.status(200).json({
-      uri: authUrl
-    })
-
-  }
-
-  async googleCallback(req: Request, res: Response) {
-
-    try {
-
-      const { tokens } = await OAuth.getToken(req.body.code);
-      const { id_token, access_token, expiry_date, refresh_token } = tokens;
-      res.status(200).json({ token: access_token })
-
-    } catch (error) {
-      res.status(500).json(error);
-    }
-  }
-
-}
+*/
