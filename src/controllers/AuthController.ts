@@ -4,6 +4,8 @@ import { OAuth } from "../auth/OAuth";
 import { Email } from "../notifications/Email";
 import { verify } from "crypto";
 import { google } from "googleapis";
+import fetch from "node-fetch";
+import { UserService } from "../services/UserService";
 
 
 export class AuthController {
@@ -36,8 +38,11 @@ export class AuthController {
             const code = req.query.code as string;
             const { tokens } = await OAuth.getToken(code);
             const { access_token } = tokens;
-            const user = await OAuth;
-            res.status(200).json({ token: access_token });
+
+            const response = await fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`);
+            const user = await response.json();
+            const data = new UserService().createAuth(user);
+            res.status(200).json({user, data, access_token});
 
         } catch (error) {
             res.status(500).json(error);

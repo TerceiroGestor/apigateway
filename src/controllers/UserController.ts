@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { LogController } from "./LogController";
 import { UserService } from "../services/UserService";
-import { RegisterController } from "./RegisterController";
+import { SignupController } from "./SignupController";
 import { userRepository } from "../repositories/userRepository";
 
 export class UserController {
@@ -43,7 +43,7 @@ export class UserController {
 
     async delete(req: Request, res: Response) {
 
-        const register = await new RegisterController().delete(req, res)
+        const register = await new SignupController().delete(req, res)
 
         try {
 

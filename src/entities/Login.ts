@@ -20,9 +20,6 @@ export class Login {
     @Column('uuid', { unique: false })
     user_id: string | undefined
 
-    @Column({ type: "varchar", nullable: false })
-    firebase_uid: string | undefined;
-
     @Column('varchar', { nullable: true })
     email: string | undefined;
 

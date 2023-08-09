@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { logRepository } from "../repositories/logRepository";
 import { XMLHttpRequest } from 'xmlhttprequest-ts';
 import { UUID } from "typeorm/driver/mongodb/bson.typings";
+import { request } from "http";
 
 export class LogController {
 
@@ -10,9 +11,9 @@ export class LogController {
 
             const data = await logRepository.find({
                 order: {
-                  created: 'DESC'
+                    created: 'DESC'
                 }
-              });
+            });
             res.status(201).json({ data });
 
         } catch (error) {
@@ -32,7 +33,7 @@ export class LogController {
         }
     }
 
-    async create(req: Request, res: Response, user: any, request: any) {
+    public async create(user: any, details: any, req: Request, res: Response) {
 
         const header = req.headers; // header["x-forwarded-for"]
         const route = `http://ip-api.com/json/${header["x-forwarded-for"]}`; //http://ip-api.com/json/{query}
@@ -43,10 +44,23 @@ export class LogController {
             const data = logRepository.create({
                 "user_id": user.id,
                 "customerInfo": xhr.responseText,
-                "requestInfo": request
+                "requestInfo": details
             });
             await logRepository.save(data);
             return data;
         };
+
     }
+
+    public async createLog(user: any, details: any) {
+
+
+        const data = logRepository.create({
+            "user_id": user.id,
+            "requestInfo": details
+        });
+        await logRepository.save(data);
+        return data;
+    }
+
 }
