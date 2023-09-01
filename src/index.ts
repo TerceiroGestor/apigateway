@@ -3,6 +3,7 @@ import cors from 'cors';
 import 'dotenv/config';
 import { AppDataSource } from './data-source';
 import routes from "./routes/Router";
+import { errorHandler } from './middleware/errorHandler';
 
 AppDataSource.initialize()
   .then(() => {
@@ -16,8 +17,8 @@ AppDataSource.initialize()
     }));
 
     app.use(express.json());
-
     app.use('/api', routes);
+    app.use(errorHandler);
 
     //Correção do Railway
     const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;

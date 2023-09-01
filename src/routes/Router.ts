@@ -1,12 +1,14 @@
 import { Router } from "express";
-import signupRouter from "./signupRoutes";
+import registerRouter from "./registerRoutes";
 import mainRouter from "./mainRoutes";
 import googleRouter from "./googleRoutes";
 
+
 const routes = Router();
 
-routes.use('/signup', signupRouter);
-routes.use('/auth', googleRouter);
+routes.use('/register', registerRouter);
+routes.use('/googleauth', googleRouter);
 
 routes.use('/', mainRouter);
+
 export default routes;
