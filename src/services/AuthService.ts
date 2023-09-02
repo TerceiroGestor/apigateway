@@ -1,3 +1,4 @@
+import { DataSource } from "typeorm";
 import { authRepository } from "../repositories/authRepository";
 import bcrypt from 'bcrypt';
 
@@ -24,16 +25,17 @@ export class AuthService {
 
   }
 
-  public async delete (token: any){
+  public async delete(token: any) {
     try {
 
-      /// verificar o token e desativar
-      const user = await authRepository.findOneBy({ token: token });
-      const response = await authRepository.softRemove(token);
-      return response;
+      const response = await authRepository.softDelete({ token: token });
+
+      return { messagem: "Autenticação finalizada com sucesso!" };
 
     } catch (error) {
+
       return error;
+
     }
 
   }

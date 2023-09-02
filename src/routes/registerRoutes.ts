@@ -1,10 +1,13 @@
 
 import { Router } from 'express';
-import { UserController } from '../controllers/UserController';
+import { RegisterController } from '../controllers/RegisterController';
 
 const registerRouter = Router();
 
-registerRouter.get('/', new UserController().read);
+registerRouter.post('/', new RegisterController().create);
+registerRouter.get('/verified', new RegisterController().emailVerified);
+
+/* registerRouter.get('/', new UserController().read);
 registerRouter.post('/', new UserController().create);
 registerRouter.put('/', new UserController().update);
 registerRouter.delete('/', new UserController().delete);
@@ -14,6 +17,6 @@ registerRouter.put('/updatepassword', new UserController().sendEmailResetPasswor
 registerRouter.delete('/unverifiedemail', new UserController().deleteAllUnverifiedEmail);
 
 registerRouter.get('/googleauth', new UserController().googleAuth);
-registerRouter.post('/googlecallback', new UserController().googleCallback);
+registerRouter.post('/googlecallback', new UserController().googleCallback); */
 
 export default registerRouter;

@@ -8,6 +8,8 @@ const routes = Router();
 
 //routes.use('/register', registerRouter);
 routes.use('/auth', googleRouter);
+routes.use('/register', registerRouter)
 routes.use('/', mainRouter);
+
 
 export default routes;

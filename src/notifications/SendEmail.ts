@@ -1,15 +1,16 @@
+import { Subject } from "typeorm/persistence/Subject";
 import { Email } from "../notifications/Email";
 
 export class SendEmail {
 
-    async sendEmailVerificationLink(email?: any, link?: any, mensagem?: any) {
+    async sendEmailVerificationLink(email?: any, subject?: any, body?: any) {
 
-        const response = await new Email().send(email, link, 'Verficação de E-mail');
+        const response = await new Email().send(email, subject, body);
         return response;
     }
 
-    async sendEmailUpdatePassword(email?: any, link?: any, mensagem?: any){
-        const response = await new Email().send(email, link, 'Alterar Senha!');
+    async sendEmailUpdatePassword(email?: any, subject?: any, body?: any){
+        const response = await new Email().send(email, subject, body);
         return response;
     }
 

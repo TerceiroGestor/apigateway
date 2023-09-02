@@ -24,11 +24,10 @@ export class AuthController {
             const code = req.query.code as string;
             const { tokens } = await OAuth.getToken(code);
             const { access_token } = tokens;
-
             const response = await fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`);
             const data = await response.json();
             const user = await new UserService().createAuth(data);
-            const auth = new AuthService().create(user, data, tokens);
+            const auth = await new AuthService().create(user, data, tokens);
 
             res.status(200).json({ user, data, auth, access_token });
 
@@ -38,6 +37,7 @@ export class AuthController {
     }
 
     async signOut(req: Request, res: Response) {
+
         const { token } = req.body;
         const signOut = await new AuthService().delete(token);
         res.status(200).json({ signOut });
