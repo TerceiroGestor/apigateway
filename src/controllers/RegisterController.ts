@@ -15,9 +15,8 @@ export class RegisterController {
             const { name, email, password } = req.body;
             const token = await this.generateAcessToken(email);
             const link = await this.generateEmailVerified(token);
-            const store = await new UserService().createEmail(name, email, password);
+            const store = await new UserService().create(name, email, password);
             const sendEmail = await new SendEmail().sendEmailVerificationLink(email, 'Validate', link);
-
             res.status(200).json({ message: 'você receberá um email de verificação' });
 
         } catch (error) {

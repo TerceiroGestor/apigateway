@@ -4,16 +4,15 @@ import { LogService } from "./LogService";
 
 export class UserService {
 
-  public async createEmail(user?: any, email?: any, password?: any) {
+  public async create(name?: any, email?: any, password?: any) {
 
     try {
 
       const response = await userRepository.save(
         userRepository.create({
-          "auth_id": user.uid,
-          "name": user.name,
-          "email": user.email,
-          "password": await bcrypt.hash(user.password, await bcrypt.genSalt(10))
+          "name": name,
+          "email": email,
+          "password": await bcrypt.hash(password, await bcrypt.genSalt(10))
         })
       );
 
