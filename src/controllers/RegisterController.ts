@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { UserService } from "../services/UserService";
 import { SendEmail } from "../notifications/SendEmail";
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 export class RegisterController {
 
@@ -10,13 +11,17 @@ export class RegisterController {
     }
 
     public async create(req: Request, res: Response) {
+
+        const data = req.body
+        const verify = await this.verifiedIfEmailExist(data.email);
+        if (verify) return res.status(400).json({ message: "Este usuário já existe!" });
+
         try {
 
-            const { name, email, password } = req.body;
-            const token = await this.generateAcessToken(email);
+            const token = await this.generateAcessToken({email: data.email, name: data.name});
             const link = await this.generateEmailVerified(token);
-            const store = await new UserService().create(name, email, password);
-            const sendEmail = await new SendEmail().sendEmailVerificationLink(email, 'Validate', link);
+            const store = await new UserService().create(data);
+            const sendEmail = await new SendEmail().sendEmailVerificationLink(data.email, 'Validate', link);
             res.status(200).json({ message: 'você receberá um email de verificação' });
 
         } catch (error) {
@@ -38,11 +43,11 @@ export class RegisterController {
 
     }
 
-    public async generateAcessToken(email: any) {
+    public async generateAcessToken(data: any) {
 
         try {
             const key = process.env.JWT_SECRET || '';
-            const token = jwt.sign({ email }, key, { expiresIn: '1h' });
+            const token = jwt.sign({ data }, key, { expiresIn: '1h' });
             return token;
         } catch (error) {
             console.error('Erro ao gerar o token JWT:', error);
@@ -63,6 +68,17 @@ export class RegisterController {
             res.status(200).json(data);
         });
     }
+
+    public async verifiedIfEmailExist(email: any) {
+        const store = await new UserService().read(email);
+        if (store) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    
 
 }
 

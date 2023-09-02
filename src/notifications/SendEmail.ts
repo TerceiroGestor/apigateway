@@ -1,4 +1,3 @@
-import { Subject } from "typeorm/persistence/Subject";
 import { Email } from "../notifications/Email";
 
 export class SendEmail {

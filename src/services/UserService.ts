@@ -1,22 +1,26 @@
 import { userRepository } from "../repositories/userRepository";
+import { Cryptography } from "../secure/Cryptography";
 import bcrypt from 'bcrypt';
 import { LogService } from "./LogService";
 
 export class UserService {
 
-  public async create(name?: any, email?: any, password?: any) {
+  public async create(data?: any) {
+
+    const encryption = await new Cryptography().encryption(data);
 
     try {
 
-      const response = await userRepository.save(
-        userRepository.create({
-          "name": name,
-          "email": email,
-          "password": await bcrypt.hash(password, await bcrypt.genSalt(10))
-        })
-      );
-
-      return response;
+      if (encryption) {
+        const response = await userRepository.save(
+          userRepository.create({
+            "name": encryption.name,
+            "email": encryption.email,
+            "password": encryption.password
+          })
+        );
+        return response;
+      }
 
     } catch (error) {
       return error;
@@ -50,11 +54,12 @@ export class UserService {
     }
   }
 
-  public async read(data: any) {
+  public async read(email: any) {
 
     try {
 
-      const response = await userRepository.findOne(data.id);
+      const response = await userRepository.findOneBy({ email: email });
+
       return response;
 
     } catch (error) {
@@ -106,4 +111,25 @@ export class UserService {
 
   }
 
+/*   public async encryption(data: any) {
+
+    const obj: Record<string, string> = {};
+
+    for (const key in data) {
+      if (data.hasOwnProperty(key)) {
+
+        if (key == 'id' || key == 'password') {
+          const value = data[key];
+          const encryptedValue = await bcrypt.hash(value, await bcrypt.genSalt(10)); // Encripta o valor
+          obj[key] = encryptedValue; // Armazena no novo objeto
+        } else {
+          obj[key] = data[key]; // Armazena no novo objeto
+        }
+
+      }
+
+    }
+    return obj;
+
+  } */
 }
