@@ -17,7 +17,7 @@ export class UserController {
 
         const link = await Admin.generateEmailVerificationLink(credential.email || '');
         await new SendEmail().sendEmailVerificationLink(credential.email, link);
-        await new UserService().create(credential, email, password);
+        await new UserService().createAuth(credential);
 
         res.status(200).json({
           code: 200,

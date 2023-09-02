@@ -35,7 +35,7 @@ export class LogController {
 
     public async create(user: any, details: any, req: Request, res: Response) {
 
-        const header = req.headers; // header["x-forwarded-for"]
+        /* const header = req.headers; // header["x-forwarded-for"]
         const route = `http://ip-api.com/json/${header["x-forwarded-for"]}`; //http://ip-api.com/json/{query}
         var xhr = new XMLHttpRequest();
         xhr.open('GET', route, true);
@@ -48,19 +48,19 @@ export class LogController {
             });
             await logRepository.save(data);
             return data;
-        };
+        }; */
 
     }
 
     public async createLog(user: any, details: any) {
 
 
-        const data = logRepository.create({
+        /* const data = logRepository.create({
             "user_id": user.id,
             "requestInfo": details
         });
         await logRepository.save(data);
-        return data;
+        return data; */
     }
 
 }

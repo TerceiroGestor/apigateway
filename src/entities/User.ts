@@ -7,10 +7,9 @@ import {
     UpdateDateColumn,
     DeleteDateColumn,
     VersionColumn,
-    BeforeInsert
 } from "typeorm";
 
-import { Login } from './Login';
+import { Auth } from './Auth';
 import { Log } from './Log';
 import { userRepository } from "../repositories/userRepository";
 import { LogService } from "../services/LogService";
@@ -55,13 +54,15 @@ export class User {
     version: number | undefined
 
     // relationship
-    @OneToMany(() => Login, login => login.user)
-    logins: Login[] | undefined;
+    @OneToMany(() => Auth, auth => auth.user)
+    logins: Auth[] | undefined;
 
     @OneToMany(() => Log, log => log.user)
     logs: Log[] | undefined;
+    auth: any;
+    auths: any;
 
-    @BeforeInsert()
+    /* @BeforeInsert()
     async checkIfUserExists() {
 
         const user = await userRepository.findOneBy({ email: this.email });
@@ -72,5 +73,5 @@ export class User {
             throw new Error(`O usuário com o email ${this.email} já existe.`);
 
         }
-    }
+    } */
 }
