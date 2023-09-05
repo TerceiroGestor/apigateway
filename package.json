@@ -25,6 +25,7 @@
     "firebase-admin": "^11.9.0",
     "google-auth-library": "^8.8.0",
     "googleapis": "^118.0.0",
+    "handlebars": "^4.7.8",
     "node-fetch": "^2.6.11",
     "nodemailer": "^6.9.3",
     "pg": "^8.11.0",

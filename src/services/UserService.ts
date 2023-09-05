@@ -19,7 +19,7 @@ export class UserService {
             "password": encryption.password
           })
         );
-        return response;
+        return response ? { store: true, message: 'Dados armazenados com sucesso!' } : { store: false, message: 'Erro ao armazenar dados!'};
       }
 
     } catch (error) {
@@ -72,9 +72,16 @@ export class UserService {
 
     try {
 
-      const response = await userRepository.findOne(data.id);
-      return response;
+      const user = await userRepository.findOneBy({ email: data.email });
 
+      if(user){
+        user.email_verified =  true;
+        const store = await userRepository.save(user);
+        return true;
+      }else{
+        return false
+      }
+     
     } catch (error) {
       return error;
     }

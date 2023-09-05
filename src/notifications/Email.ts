@@ -20,7 +20,7 @@ export class Email {
                 from: process.env.EMAIL_USER,
                 to: email,
                 subject: subject,
-                text: body
+                html: body
             };
 
             const response = await transporter.sendMail(mailOptions);
