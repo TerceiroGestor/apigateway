@@ -1,7 +1,8 @@
 import { userRepository } from "../repositories/userRepository";
 import { Cryptography } from "../secure/Cryptography";
-import bcrypt from 'bcrypt';
-import { LogService } from "./LogService";
+import { User } from "../entities/User";
+import { Repository } from 'typeorm';
+
 
 export class UserService {
 
@@ -19,7 +20,7 @@ export class UserService {
             "password": encryption.password
           })
         );
-        return response ? { store: true, message: 'Dados armazenados com sucesso!' } : { store: false, message: 'Erro ao armazenar dados!'};
+        return response ? { store: true, message: 'Dados armazenados com sucesso!' } : { store: false, message: 'Erro ao armazenar dados!' };
       }
 
     } catch (error) {
@@ -54,34 +55,34 @@ export class UserService {
     }
   }
 
-  public async read(email: any) {
+  public async read(data: any) {
 
-    try {
+    const user = await userRepository.findOneBy({ email: data.email });
 
-      const response = await userRepository.findOneBy({ email: email });
+    if (user) {
 
-      return response;
+      /* new LogService().create(user, { message: `O usuário com o email ${data.email} já existe.` }); */
+      return user;
 
-    } catch (error) {
-      return error;
+    } else {
+
+      return false;
+
     }
 
   }
 
   public async update(data: any) {
+    const encryption = await new Cryptography().encryption(data);
 
     try {
 
       const user = await userRepository.findOneBy({ email: data.email });
+      if (!user) return false;
+      Object.assign(user, encryption);
+      await userRepository.save(user);
+      return user;
 
-      if(user){
-        user.email_verified =  true;
-        const store = await userRepository.save(user);
-        return true;
-      }else{
-        return false
-      }
-     
     } catch (error) {
       return error;
     }
@@ -101,42 +102,32 @@ export class UserService {
 
   }
 
-  public async checkIfUserExists(data: any) {
+  /**
+ * @param email 
+ * @returns
+ */
+  public async checkIfUserExists(email: string): Promise<{ user?: User | null; error?: any }> {
 
-    const user = await userRepository.findOneBy({ email: data.email });
+    try {
 
-    if (user) {
+      const user = await userRepository.findOneBy({ email: email });
+      return { user } || null;
 
-      /* new LogService().create(user, { message: `O usuário com o email ${data.email} já existe.` }); */
-      return user;
+    } catch (error) {
 
-    } else {
-
-      return false;
+      return { error } || null;
 
     }
 
   }
 
-/*   public async encryption(data: any) {
+  public async checkToken(email: string, token: any) {
+    const user = await userRepository.createQueryBuilder('user')
+      .where('user.email = :email', { email: email })
+      .andWhere('user.token = :token', { token: token })
+      .getOne();
+    if (!user) return false;
+    return user;
+  }
 
-    const obj: Record<string, string> = {};
-
-    for (const key in data) {
-      if (data.hasOwnProperty(key)) {
-
-        if (key == 'id' || key == 'password') {
-          const value = data[key];
-          const encryptedValue = await bcrypt.hash(value, await bcrypt.genSalt(10)); // Encripta o valor
-          obj[key] = encryptedValue; // Armazena no novo objeto
-        } else {
-          obj[key] = data[key]; // Armazena no novo objeto
-        }
-
-      }
-
-    }
-    return obj;
-
-  } */
 }

@@ -4,8 +4,11 @@ import { RegisterController } from '../controllers/RegisterController';
 
 const registerRouter = Router();
 
-registerRouter.post('/', new RegisterController().create);
+registerRouter.post('/', new RegisterController().create); 
 registerRouter.get('/verified', new RegisterController().emailVerified);
+registerRouter.post('/resetpassword', new RegisterController().resetPassword);
+registerRouter.get('/resetpassword', new RegisterController().verifyResetPassword);
+registerRouter.post('/resetpassword/renew', new RegisterController().renewPassword);
 
 /* registerRouter.get('/', new UserController().read);
 registerRouter.post('/', new UserController().create);

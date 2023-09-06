@@ -44,6 +44,9 @@ export class User {
     @Column({ type: "date", nullable: false })
     birth: Date | undefined
 
+    @Column({ type: "text", nullable: false })
+    token: string | undefined
+
     @CreateDateColumn()
     created: Date | undefined
     @UpdateDateColumn()

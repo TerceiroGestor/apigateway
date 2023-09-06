@@ -7,7 +7,7 @@ export class Token {
 
         try {
             const key = process.env.JWT_SECRET || '';
-            const token = jwt.sign({ data }, key, { expiresIn: exp });
+            const token = jwt.sign(data, key, { expiresIn: exp });
             return token;
         } catch (error) {
             console.error('Erro ao gerar o token JWT:', error);
