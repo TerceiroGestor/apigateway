@@ -13,7 +13,6 @@ export class Validator {
     address: 'object',
   }
 
-
   validate(obj: Record<string, any>): Record<string, string> {
     const errors: Record<string, string> = {};
 
@@ -29,5 +28,18 @@ export class Validator {
     }
 
     return errors;
+
+  }
+
+  isEmailValid(email: string): any {
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    return emailRegex.test(email) //?  {status: true, message:'Este email é válido!'} :  {status: false, message:'Este email não é válido!'};
+  }
+
+  isPasswordValid(password: string): any {
+
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]).{8,}$/;
+    return passwordRegex.test(password) //?  {status: true, message:'Senha segue o padrão!'} : {status: false, message:'Senha não segue o padrão!'};
+
   }
 }

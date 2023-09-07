@@ -1,4 +1,5 @@
 import * as nodemailer from 'nodemailer';
+import { CustomError } from '../middleware/customError';
 
 export class Email {
 
@@ -24,11 +25,10 @@ export class Email {
             };
 
             const response = await transporter.sendMail(mailOptions);
-
             return response.response;
 
         } catch (error) {
-            return error;
+            throw new CustomError(400, 'Error sending email!', 'Houve algum erro ao tentar enviar o email!', {error});
         }
     }
 }

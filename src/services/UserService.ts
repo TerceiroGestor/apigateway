@@ -1,5 +1,6 @@
 import { AppDataSource } from "../data-source";
 import { User } from "../entities/User";
+import { CustomError } from "../middleware/customError";
 
 import { Cryptography } from "../secure/Cryptography";
 
@@ -12,24 +13,20 @@ export class UserService {
     this.store = AppDataSource.getRepository(User);
   }
 
-  public async create(data?: any) {
+  public async create(data?: any): Promise<any> {
 
-    const encryption = await new Cryptography().encryption(data);
-    const user = await this.checkIfUserExists(data);
-    if(user) return user;
+    if (await this.checkIfUserExists(data)) {
+      throw new CustomError(400, 'Existing email!', 'Esse email já existe em nossa base de dados', {});
+    }
 
     try {
 
-      if (encryption && user) {
-
-        Object.assign(user, encryption);
-        const result = await this.store.save(this.store.create(user))
-        return result ? { store: true, message: 'Dados armazenados com sucesso!' } : { store: false, message: 'Erro ao armazenar dados!' };
-
-      }
+      const encryption = await new Cryptography().encryption(data);
+      const result = await this.store.save(this.store.create(encryption));
+      return !!result
 
     } catch (error) {
-      return error;
+      throw new CustomError(400, 'Database error!', 'Erro ao armazenar os dados!', {});
     }
 
   }
@@ -43,7 +40,7 @@ export class UserService {
 
   public async update(data: any) {
     const encryption = await new Cryptography().encryption(data);
-    const user = await this.checkIfUserExists(data);
+    const user = await this.lookForUser(data);
     try {
 
       Object.assign(user, encryption);
@@ -73,11 +70,16 @@ export class UserService {
  * @param data
  * @returns
  */
-  public async checkIfUserExists(data: any): Promise<{ user?: User | null; error?: any }> {
+  public async checkIfUserExists(data: any): Promise<boolean> {
 
-    const user = await this.store.findOneBy({email: data.email});
-    return user ? user : false;
+    const user = await this.store.findOneBy({ email: data.email });
+    return !!user;
 
+  }
+
+  public async lookForUser(data: any): Promise<any> {
+    const user = await this.store.findOneBy({ email: data.email });
+    return user;
   }
 
   public async checkToken(email: string, token: any) {

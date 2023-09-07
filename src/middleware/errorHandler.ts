@@ -1,13 +1,11 @@
-import { Request, Response, NextFunction } from "express";
 
-export function errorHandler(err: any, req: Request, res: Response, next: NextFunction) {
+import { Request, Response, NextFunction } from 'express';
+import { CustomError } from './customError';
 
-    const statusCode = err.statusCode || 500;
-
-    res.status(statusCode).json({
-        error: {
-            code: statusCode,
-            message: err.message || "Ocorreu um erro no servidor."
-        }
-    });
+export function errorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
+    if (err instanceof CustomError) {
+        res.status(err.statusCode).json(err);
+    } else {
+        res.status(500).json({ error: 'Erro interno do servidor' });
+    }
 }
