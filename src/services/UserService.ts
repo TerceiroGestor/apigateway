@@ -1,26 +1,31 @@
-import { userRepository } from "../repositories/userRepository";
-import { Cryptography } from "../secure/Cryptography";
+import { AppDataSource } from "../data-source";
 import { User } from "../entities/User";
-import { Repository } from 'typeorm';
+
+import { Cryptography } from "../secure/Cryptography";
 
 
 export class UserService {
 
+  private readonly store: any;
+
+  constructor() {
+    this.store = AppDataSource.getRepository(User);
+  }
+
   public async create(data?: any) {
 
     const encryption = await new Cryptography().encryption(data);
+    const user = await this.checkIfUserExists(data);
+    if(user) return user;
 
     try {
 
-      if (encryption) {
-        const response = await userRepository.save(
-          userRepository.create({
-            "name": encryption.name,
-            "email": encryption.email,
-            "password": encryption.password
-          })
-        );
-        return response ? { store: true, message: 'Dados armazenados com sucesso!' } : { store: false, message: 'Erro ao armazenar dados!' };
+      if (encryption && user) {
+
+        Object.assign(user, encryption);
+        const result = await this.store.save(this.store.create(user))
+        return result ? { store: true, message: 'Dados armazenados com sucesso!' } : { store: false, message: 'Erro ao armazenar dados!' };
+
       }
 
     } catch (error) {
@@ -29,58 +34,20 @@ export class UserService {
 
   }
 
-  public async createAuth(data: any) {
-
-    // Verifique se o usuário já existe
-    const existingUser = await this.checkIfUserExists(data);
-
-    if (existingUser) {
-
-      return existingUser;
-
-    } else {
-
-      const response = await userRepository.save(
-        userRepository.create({
-          "auth_id": data.sub,
-          "name": data.name,
-          "lastname": data.family_name,
-          "email": data.email,
-          "email_verified": data.email_verified
-        })
-      );
-
-      return response;
-
-    }
-  }
-
   public async read(data: any) {
 
-    const user = await userRepository.findOneBy({ email: data.email });
-
-    if (user) {
-
-      /* new LogService().create(user, { message: `O usuário com o email ${data.email} já existe.` }); */
-      return user;
-
-    } else {
-
-      return false;
-
-    }
+    const user = await this.store.findOneBy(data);
+    return user ? user : false;
 
   }
 
   public async update(data: any) {
     const encryption = await new Cryptography().encryption(data);
-
+    const user = await this.checkIfUserExists(data);
     try {
 
-      const user = await userRepository.findOneBy({ email: data.email });
-      if (!user) return false;
       Object.assign(user, encryption);
-      await userRepository.save(user);
+      await this.store.save(user);
       return user;
 
     } catch (error) {
@@ -93,7 +60,7 @@ export class UserService {
 
     try {
 
-      const response = await userRepository.delete({ auth_id: uuid });
+      const response = await this.store.delete({ auth_id: uuid });
       return response;
 
     } catch (error) {
@@ -103,31 +70,24 @@ export class UserService {
   }
 
   /**
- * @param email 
+ * @param data
  * @returns
  */
-  public async checkIfUserExists(email: string): Promise<{ user?: User | null; error?: any }> {
+  public async checkIfUserExists(data: any): Promise<{ user?: User | null; error?: any }> {
 
-    try {
-
-      const user = await userRepository.findOneBy({ email: email });
-      return { user } || null;
-
-    } catch (error) {
-
-      return { error } || null;
-
-    }
+    const user = await this.store.findOneBy({email: data.email});
+    return user ? user : false;
 
   }
 
   public async checkToken(email: string, token: any) {
-    const user = await userRepository.createQueryBuilder('user')
+    const user = await this.store.createQueryBuilder('user')
       .where('user.email = :email', { email: email })
       .andWhere('user.token = :token', { token: token })
       .getOne();
-    if (!user) return false;
-    return user;
+
+    return user ? user : false;
   }
+
 
 }

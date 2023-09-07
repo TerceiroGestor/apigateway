@@ -1,22 +1,29 @@
-import { authRepository } from "../repositories/authRepository";
+import { AppDataSource } from "../data-source";
+import { Auth } from "../entities/Auth";
 
 export class AuthService {
 
-  public async create(user: any, tokens: any) {
+  private readonly store: any;
+
+  constructor() {
+    this.store = AppDataSource.getRepository(Auth);
+  }
+
+  public async create(data: any, token: any) {
 
     try {
-      const authToday = await this.verifyAuthToday(user);
+
+      const authToday = await this.verifyAuthToday(data);
+
       if (!authToday) {
-        const response = await authRepository.save(
-          authRepository.create({
-            "user_id": user.id,
-            "email": user.email,
-            "token": tokens,
-          })
-        );
-        return response;
+
+        Object.assign(data, { token: token, user_id: data.id });
+        const filterdata = await this.filterData(data);
+        const result = await this.store.save(this.store.create(filterdata))
+        return result;
+
       } else {
-        return { message: 'authentication has already been performed today!' }
+        return authToday;
       }
 
     } catch (error) {
@@ -28,9 +35,8 @@ export class AuthService {
   public async delete(token: any) {
     try {
 
-      const response = await authRepository.softDelete({ token: token });
-
-      return { messagem: "Autenticação finalizada com sucesso!" };
+      const result = await this.store.softDelete({ token: token });
+      return result.affected ? { messagem: "Success in terminating authentication!" } : { messagem: "Error in terminating authentication!" };
 
     } catch (error) {
 
@@ -40,15 +46,25 @@ export class AuthService {
 
   }
 
-  public async verifyAuthToday(user: any) {
-    const response = await authRepository
+  public async verifyAuthToday(data: any) {
+
+    const result = await this.store
       .createQueryBuilder('auth')
-      .where('auth.email = :email', { email: user.email })
-      .andWhere('DATE(auth.created) = :today', { today: new Date().toISOString().split('T')[0] }) // Filtra apenas pela data
-      .andWhere('EXTRACT(HOUR FROM auth.created) = :currentHour', { currentHour: new Date().getHours() }) // Filtra pela hora atual
+      .where('auth.email = :email', { email: data.email })
+      .andWhere('DATE(auth.created) = :today', { today: new Date().toISOString().split('T')[0] })
+      .andWhere('EXTRACT(HOUR FROM auth.created) = :currentHour', { currentHour: new Date().getHours() })
       .getOne();
-      
-    return response ? true : false;
+
+    return result ? result : false;
   }
 
+  public async filterData(data: any) {
+    delete data.id;
+    delete data.created;
+    delete data.updated;
+    delete data.deleted;
+    delete data.version;
+
+    return data;
+  }
 }

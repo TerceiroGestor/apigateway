@@ -2,6 +2,8 @@ import bcrypt from 'bcrypt';
 
 export class Cryptography {
 
+  private readonly sensitiveKeys: string[] = ['password'];
+
   public async encryption(data: any) {
 
     const obj: Record<string, string> = {};
@@ -9,12 +11,12 @@ export class Cryptography {
     for (const key in data) {
       if (data.hasOwnProperty(key)) {
 
-        if (key == 'id' || key == 'password') {
+        if (this.sensitiveKeys.includes(key)) {
           const value = data[key];
-          const encryptedValue = await bcrypt.hash(value, await bcrypt.genSalt(10)); // Encripta o valor
-          obj[key] = encryptedValue; // Armazena no novo objeto
+          const encryptedValue = await bcrypt.hash(value, await bcrypt.genSalt(10));
+          obj[key] = encryptedValue;
         } else {
-          obj[key] = data[key]; // Armazena no novo objeto
+          obj[key] = data[key];
         }
 
       }
@@ -31,7 +33,7 @@ export class Cryptography {
     for (const key in data) {
       if (data.hasOwnProperty(key)) {
 
-        if (key == 'id' || key == 'password') {
+        if (this.sensitiveKeys.includes(key)) {
           const value = data[key];
           const encryptedValue = await bcrypt.hash(value, await bcrypt.genSalt(10)); // Encripta o valor
           obj[key] = encryptedValue; // Armazena no novo objeto

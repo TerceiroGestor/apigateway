@@ -1,13 +1,13 @@
 import jwt from 'jsonwebtoken';
-import util from 'util';
 
 export class Token {
+
+    private readonly key: string = process.env.JWT_SECRET || '';
 
     public async generateToken(data: any, exp: any) {
 
         try {
-            const key = process.env.JWT_SECRET || '';
-            const token = jwt.sign(data, key, { expiresIn: exp });
+            const token = jwt.sign(data, this.key, { expiresIn: exp });
             return token;
         } catch (error) {
             console.error('Erro ao gerar o token JWT:', error);
@@ -15,10 +15,10 @@ export class Token {
         }
     }
 
-    public async validateToken(key: any, token: any): Promise<{ validate: boolean; message: string; data?: any }> {
+    public async validateToken(token: string): Promise<{ validate: boolean; message: string; data?: any }> {
 
         return new Promise((resolve) => {
-            jwt.verify(token, key, (error: any, data: any) => {
+            jwt.verify(token, this.key, (error: any, data: any) => {
                 if (error) {
                     resolve({ validate: false, message: 'Error validating token!' });
                 } else {

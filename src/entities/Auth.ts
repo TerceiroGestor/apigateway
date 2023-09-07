@@ -26,9 +26,6 @@ export class Auth {
     @Column('varchar', { nullable: true })
     email: string | undefined;
 
-    @Column('boolean')
-    emailVerified: boolean | undefined;
-
     @Column('text')
     token: string | undefined;
 
