@@ -1,7 +1,7 @@
 import { Email } from "../notifications/Email";
 import handlebars from 'handlebars';
 import fs from 'fs';
-import { CustomError } from "../middleware/customError";
+import { CustomError } from "../secure/CustomError";
 
 export class SendEmail {
 
