@@ -1,7 +1,6 @@
 import { AppDataSource } from "../data-source";
 import { User } from "../entities/User";
-import { CustomError } from "../middleware/customError";
-
+import { CustomError } from "../secure/CustomError";
 import { Cryptography } from "../secure/Cryptography";
 
 
@@ -16,7 +15,7 @@ export class UserService {
   public async create(data?: any): Promise<any> {
 
     if (await this.checkIfUserExists(data)) {
-      throw new CustomError(400, 'Existing email!', 'Esse email já existe em nossa base de dados', {});
+      throw new CustomError(400, { message: 'Existing email!'});
     }
 
     try {
@@ -26,7 +25,7 @@ export class UserService {
       return !!result
 
     } catch (error) {
-      throw new CustomError(400, 'Database error!', 'Erro ao armazenar os dados!', {});
+      throw new CustomError(400, { message: 'Database error!'});
     }
 
   }

@@ -3,7 +3,7 @@ import cors from 'cors';
 import 'dotenv/config';
 import { AppDataSource } from './data-source';
 import routes from "./routes/Router";
-import { errorHandler } from './middleware/errorHandler';
+import { errorHandler } from './secure/ErrorHandler';
 
 AppDataSource.initialize()
   .then(() => {

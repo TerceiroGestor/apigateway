@@ -3,12 +3,11 @@ import { SendEmail } from "../notifications/SendEmail";
 import { Token } from "../secure/Token";
 import { AuthService } from "../services/AuthService";
 import { UserService } from "../services/UserService";
-import { Validator } from "../secure/Validator";
-import { CustomError } from "../middleware/customError";
+import { CustomError } from "../secure/CustomError";
 
 export class RegisterController {
 
-    public async create(req: Request, res: Response) {
+    public async create(req: Request, res: Response, next: NextFunction) {
 
         try {
 
@@ -19,25 +18,27 @@ export class RegisterController {
                 await new SendEmail().sendEmailVerified(token, req.body, 'Email Validation')
             ];
 
-            res.status(200).json({create, email});
+            res.status(200).json({ create, email });
 
         } catch (error) {
-            throw new CustomError(400, 'Error Created!', 'Erro ao criar usuário!', {});
+            next(error);
         }
     }
 
-    public async emailVerified(req: Request, res: Response) {
+    public async emailVerified(req: Request, res: Response, next: NextFunction) {
 
-        const validate = await new Token().validateToken(req.query.token as string);
+        try {
+            const validate = await new Token().validateToken(req.query.token as string);
+            if (!validate.validate) { throw new CustomError(400, validate) };
 
-        if (!validate.validate) {
-            return res.status(400).json(validate);
+            const user = await new UserService().update(validate.data);
+            const auth = await new AuthService().create(user, req.query.token as string);
+
+            res.status(200).json({ validate, user, auth });
+
+        } catch (error) {
+            next(error);
         }
-
-        const user = await new UserService().update(validate.data);
-        const auth = await new AuthService().create(user, req.query.token as string);
-
-        res.status(validate.validate && user && auth ? 200 : 403).json({ validate, user, auth });
     }
 
     public async resetPassword(req: Request, res: Response) {

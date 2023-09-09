@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { Validator } from '../secure/Validator';
-import { HttpStatusMessages } from '../secure/HttpStatusMessages';
-import { CustomError } from './customError';
+import { CustomError } from '../secure/CustomError';
 import { Token } from '../secure/Token';
-
+import { ValidationData } from '../secure/ValidationData';
 
 export class validateMiddleware {
 
@@ -12,12 +11,12 @@ export class validateMiddleware {
     try {
 
       if (Object.keys(req.body).length === 0) {
-        throw new CustomError(400, 'Requisição vazia!', 'Os dados necessários não foram enviados', {});
+        throw new CustomError(400, { message: 'Empty request!' });
       }
 
       const validation = new Validator().validate(req.body);
       if (Object.keys(validation).length > 0) {
-        throw new CustomError(400, 'Validation Error!', ' Erro na validação dos dados!', validation);
+        throw new CustomError(400, validation);
       }
 
     } catch (error) {
@@ -32,7 +31,7 @@ export class validateMiddleware {
     try {
 
       if (Object.keys(req.query).length === 0) {
-        throw new CustomError(400, 'Requisição vazia!', 'Os dados necessários não foram enviados', {});
+        throw new CustomError(400);
       }
 
     } catch (error) {
@@ -45,16 +44,16 @@ export class validateMiddleware {
   static async validationPatterns(req: Request, res: Response, next: NextFunction) {
 
     try {
-      const message = HttpStatusMessages.getMessage(400, 'en');
+
       const email = new Validator().isEmailValid(req.body.email);
       const password = new Validator().isPasswordValid(req.body.password);
 
       if (!email) {
-        throw new CustomError(message.code, message.title, message.description, email);
+        throw new CustomError(400, { message: 'Invalid email!', email: email });
       }
 
       if (!password) {
-        throw new CustomError(message.code, message.title, message.description, password);
+        throw new CustomError(400, { message: 'Invalid password!', password: password });
       }
 
     } catch (error) {
@@ -68,11 +67,12 @@ export class validateMiddleware {
 
     try {
 
-      const message = HttpStatusMessages.getMessage(401, 'en');
       const validate = await new Token().validateToken(req.query.token as string);
-      if (!validate.validate) {
-        throw new CustomError(message.code, message.title, message.description, {});
-      }
+      if (!validate.validate) { throw new CustomError(401); }
+      
+      
+      const validationData = ValidationData.getInstance();
+      validationData.setValid(validate.validate);
 
     } catch (error) {
       next(error);

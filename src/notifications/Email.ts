@@ -1,5 +1,5 @@
 import * as nodemailer from 'nodemailer';
-import { CustomError } from '../middleware/customError';
+import { CustomError } from '../secure/CustomError';
 
 export class Email {
 
@@ -28,7 +28,7 @@ export class Email {
             return response.response;
 
         } catch (error) {
-            throw new CustomError(400, 'Error sending email!', 'Houve algum erro ao tentar enviar o email!', {error});
+            throw new CustomError(400, { message: 'Error sending email!', error} );
         }
     }
 }
