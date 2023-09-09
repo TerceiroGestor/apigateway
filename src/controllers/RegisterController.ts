@@ -4,6 +4,7 @@ import { Token } from "../secure/Token";
 import { AuthService } from "../services/AuthService";
 import { UserService } from "../services/UserService";
 import { CustomError } from "../secure/CustomError";
+import { ValidationData } from "../secure/ValidationData";
 
 export class RegisterController {
 
@@ -28,13 +29,12 @@ export class RegisterController {
     public async emailVerified(req: Request, res: Response, next: NextFunction) {
 
         try {
-            const validate = await new Token().validateToken(req.query.token as string);
-            if (!validate.validate) { throw new CustomError(400, validate) };
-
-            const user = await new UserService().update(validate.data);
+            
+            const validation = ValidationData.getInstance().getValid();
+            const user = await new UserService().update(validation);
             const auth = await new AuthService().create(user, req.query.token as string);
 
-            res.status(200).json({ validate, user, auth });
+            res.status(200).json({ validation, user, auth });
 
         } catch (error) {
             next(error);

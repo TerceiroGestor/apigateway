@@ -1,6 +1,14 @@
+interface UserData {
+  name: string;
+  email: string;
+  // Outros campos de dados do usuário
+}
+
+
 export class ValidationData {
   private static instance: ValidationData;
   private isValid: boolean = false;
+  private userData: UserData | null = null;
 
   private constructor() { }
 
@@ -11,8 +19,17 @@ export class ValidationData {
     return ValidationData.instance;
   }
 
-  public setValid(isValid: boolean): void {
+  public setValid(isValid: boolean, userData: UserData): void {
     this.isValid = isValid;
+    this.userData = userData;
+  }
+
+  public getValid(): object {
+
+    return {
+      isValid: this.isValid,
+      userData: this.userData,
+    };
   }
 
 }

@@ -72,7 +72,7 @@ export class validateMiddleware {
       
       
       const validationData = ValidationData.getInstance();
-      validationData.setValid(validate.validate);
+      validationData.setValid(validate.validate, validate.data);
 
     } catch (error) {
       next(error);
