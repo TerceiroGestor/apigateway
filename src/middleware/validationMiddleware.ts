@@ -45,6 +45,8 @@ export class validateMiddleware {
 
     try {
 
+
+
       const email = new Validator().isEmailValid(req.body.email);
       const password = new Validator().isPasswordValid(req.body.password);
 
@@ -63,16 +65,54 @@ export class validateMiddleware {
     next();
   }
 
+  static async validationPatternsEmail(req: Request, res: Response, next: NextFunction) {
+
+    try {
+
+      const email = new Validator().isEmailValid(req.body.email);
+
+      if (!email) {
+        throw new CustomError(400, { message: 'Invalid email!', email: email });
+      }
+
+    } catch (error) {
+      next(error);
+    }
+
+    next();
+  }
+
+
   static async validationToken(req: Request, res: Response, next: NextFunction) {
 
     try {
 
-      const validate = await new Token().validateToken(req.query.token as string);
-      if (!validate.validate) { throw new CustomError(401); }
-      
-      
+      const validate = await new Token().validateToken(req.body.token as string);
+      if (!validate.validate) {
+        throw new CustomError(401);
+      }
+
       const validationData = ValidationData.getInstance();
-      validationData.setValid(validate.validate, validate.data);
+      validationData.setValid(validate.data);
+
+    } catch (error) {
+      next(error);
+    }
+
+    next();
+  }
+
+  static async validationEmail(req: Request, res: Response, next: NextFunction) {
+
+    try {
+
+      const validate = await new Token().validateToken(req.query.token as string);
+      if (!validate.validate) {
+        throw new CustomError(401);
+      }
+      Object.assign(validate.data, { email_verified: true });
+      const validationData = ValidationData.getInstance();
+      validationData.setValid(validate.data);
 
     } catch (error) {
       next(error);

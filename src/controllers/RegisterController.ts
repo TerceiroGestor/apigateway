@@ -29,38 +29,68 @@ export class RegisterController {
     public async emailVerified(req: Request, res: Response, next: NextFunction) {
 
         try {
-            
-            const validation = ValidationData.getInstance().getValid();
-            const user = await new UserService().update(validation);
-            const auth = await new AuthService().create(user, req.query.token as string);
 
-            res.status(200).json({ validation, user, auth });
+            const validation = ValidationData.getInstance();
+            const user = await new UserService().update(validation.userData);
+            const auth = await new AuthService().create(user, req.query.token as string);
+            Object.assign(auth, validation.userData);
+            res.status(200).json(auth);
 
         } catch (error) {
             next(error);
         }
     }
 
-    public async resetPassword(req: Request, res: Response) {
-        const user = await new UserService().checkIfUserExists(req.body);
-        if (user) {
-            const email = await new SendEmail().sendEmailVerified(this.token(req.body, '15m'), req.body, 'Reset Password!');
-            res.status(200).json(email);
-        } else {
-            res.status(403).json({ message: 'email does not exist!' });
+    public async resetPassword(req: Request, res: Response, next: NextFunction) {
+
+        try {
+
+            const user = await new UserService().checkIfUserExists(req.body);
+            if (user) {
+                const token = await new Token().generateToken(req.body, '15m');
+                const user = await new UserService().insertToken(req.body, token);
+                const email = await new SendEmail().sendResetPassword(token, req.body, 'Reset Password!');
+                res.status(200).json(email);
+            } else {
+                throw new CustomError(400, { message: 'Email does not exist!' });
+            }
+
+        } catch (error) {
+            next(error);
+        }
+
+    }
+
+    public async verifyResetPassword(req: Request, res: Response, next: NextFunction) {
+        try {
+            const validation = ValidationData.getInstance();
+            if (validation.userData) {
+                const user = await new UserService().checkToken(validation.userData.email, req.query.token);
+                if (user.email_verified) {
+                    res.status(200).json(user);
+                } else {
+                    throw new CustomError(400, { message: 'Error when updating password!' });
+                }
+            }
+
+        } catch (error) {
+            next(error);
         }
     }
 
-    public async verifyResetPassword(req: Request, res: Response) {
-        const validate = await new Token().validateToken(req.query.token as string);
-        const response = await new UserService().checkToken(validate.data.email, req.query.token);
-        res.status(validate && response ? 200 : 403).json(validate && response ? validate : { message: 'Error validating token!' });
-    }
+    public async renewPassword(req: Request, res: Response, next: NextFunction) {
 
-    public async renewPassword(req: Request, res: Response) {
-        const user = await new UserService().update(req.body);
+        try {
+            const user = await new UserService().update(req.body);
 
-        res.status(user ? 200 : 403).json(user && user ? { message: 'Success in updating password!' } : { message: 'Error updating password!' });
+            if(user){
+                res.status(200).json({ message: 'Success in updating password!' });
+            }else{
+                throw new CustomError(400, {message: 'Error updating password!'});
+            }
+        } catch (error) {
+            next(error);
+        }
     }
 
     private async token(data: any, time: string) {

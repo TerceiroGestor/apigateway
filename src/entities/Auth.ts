@@ -23,9 +23,6 @@ export class Auth {
     @Column('uuid', { unique: false })
     user_id: string | undefined
 
-    @Column('varchar', { nullable: true })
-    email: string | undefined;
-
     @Column('text')
     token: string | undefined;
 

@@ -22,6 +22,7 @@ export class Cryptography {
       }
 
     }
+    
     return obj;
 
   }

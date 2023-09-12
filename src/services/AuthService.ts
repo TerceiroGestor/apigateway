@@ -13,18 +13,10 @@ export class AuthService {
 
     try {
 
-      const authToday = await this.verifyAuthToday(data);
-
-      if (!authToday) {
-
-        Object.assign(data, { token: token, user_id: data.id });
-        const filterdata = await this.filterData(data);
-        const result = await this.store.save(this.store.create(filterdata))
-        return result;
-
-      } else {
-        return authToday;
-      }
+      Object.assign(data, { token: token, user_id: data.id, user_name: data.name});
+      const filterdata = await this.filterData(data);
+      const result = await this.store.save(this.store.create(filterdata))
+      return result;
 
     } catch (error) {
       return error;
