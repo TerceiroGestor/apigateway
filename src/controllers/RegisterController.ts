@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { SendEmail } from "../notifications/SendEmail";
 import { Token } from "../secure/Token";
-import { AuthService } from "../services/AuthService";
 import { UserService } from "../services/UserService";
 import { CustomError } from "../secure/CustomError";
 import { ValidationData } from "../secure/ValidationData";
@@ -32,9 +31,8 @@ export class RegisterController {
 
             const validation = ValidationData.getInstance();
             const user = await new UserService().update(validation.userData);
-            const auth = await new AuthService().create(user, req.query.token as string);
-            Object.assign(auth, validation.userData);
-            res.status(200).json(auth);
+            //Object.assign(validation.userData);
+            res.status(200).json(validation.userData);
 
         } catch (error) {
             next(error);

@@ -1,5 +1,6 @@
 import { AppDataSource } from "../data-source";
 import { Auth } from "../entities/Auth";
+import { CustomError } from "../secure/CustomError";
 
 export class AuthService {
 
@@ -9,31 +10,34 @@ export class AuthService {
     this.store = AppDataSource.getRepository(Auth);
   }
 
-  public async create(data: any, token: any) {
+  public async create(data: any) {
 
     try {
 
-      Object.assign(data, { token: token, user_id: data.id, user_name: data.name});
+      Object.assign(data, { user_id: data.id });
       const filterdata = await this.filterData(data);
-      const result = await this.store.save(this.store.create(filterdata))
+      const result = await this.store.save(this.store.create(filterdata));
       return result;
 
     } catch (error) {
-      return error;
+      throw new CustomError(400, { message: 'Database Error!' })
     }
 
   }
 
-  public async delete(token: any) {
+  public async delete(id: string) {
     try {
 
-      const result = await this.store.softDelete({ token: token });
-      return result.affected ? { messagem: "Success in terminating authentication!" } : { messagem: "Error in terminating authentication!" };
+      const result = await this.store.softDelete({ id: id });
+      
+      if (result.affected) {
+        return { status: true, messagem: "Success in terminating authentication!" };
+      } else {
+        throw new CustomError(400, { status: false, message: 'Error in terminating authentication!' });
+      }
 
     } catch (error) {
-
-      return error;
-
+      throw error;
     }
 
   }
@@ -50,6 +54,11 @@ export class AuthService {
     return result ? result : false;
   }
 
+  /**
+   * Filtrar as keys {id: created: updated: deleted: version:}
+   * @param data 
+   * @returns 
+   */
   public async filterData(data: any) {
     delete data.id;
     delete data.created;

@@ -41,11 +41,9 @@ export class validateMiddleware {
     next();
   }
 
-  static async validationPatterns(req: Request, res: Response, next: NextFunction) {
+  static async validationPatternsEmailPassword(req: Request, res: Response, next: NextFunction) {
 
     try {
-
-
 
       const email = new Validator().isEmailValid(req.body.email);
       const password = new Validator().isPasswordValid(req.body.password);

@@ -2,6 +2,7 @@ import { AppDataSource } from "../data-source";
 import { User } from "../entities/User";
 import { CustomError } from "../secure/CustomError";
 import { Cryptography } from "../secure/Cryptography";
+import e from "express";
 
 
 export class UserService {
@@ -46,7 +47,7 @@ export class UserService {
       return result;
 
     } catch (error) {
-      throw new CustomError(400, {message: 'Database Error!'})
+      throw new CustomError(400, { message: 'Database Error!' })
     }
   }
 
@@ -83,8 +84,15 @@ export class UserService {
   }
 
   public async lookForUser(data: any): Promise<any> {
-    const user = await this.store.findOneBy({ email: data.email });
-    return user;
+
+    try {
+      const user = await this.store.findOneBy({ email: data.email });
+      if (!user) { throw new CustomError(400, { message: 'User not found!' }); }
+      return user;
+    } catch (error) {
+      throw error;
+    }
+
   }
 
   public async insertToken(data: any, token: string) {
@@ -109,6 +117,21 @@ export class UserService {
       return user ? user : false;
     } catch (error) {
       throw new CustomError(400, { message: 'Database error!' });
+    }
+
+  }
+
+  public async validateUser(data: any) {
+    try {
+
+      const user = await this.lookForUser(data);
+      const comparePassword = await new Cryptography().comparePassword(data.password, user.password);
+      if (!comparePassword) {throw new CustomError(400, { message: 'Error validating password!' });}
+        
+      return user;
+
+    } catch (error) {
+      throw error;
     }
 
   }

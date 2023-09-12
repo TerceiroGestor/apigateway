@@ -1,8 +1,10 @@
 import bcrypt from 'bcrypt';
+import { CustomError } from './CustomError';
 
 export class Cryptography {
 
   private readonly sensitiveKeys: string[] = ['password'];
+  private readonly secretKey: string = process.env.ENCRYPT_SECRET_KEY || '';
 
   public async encryption(data: any) {
 
@@ -22,8 +24,19 @@ export class Cryptography {
       }
 
     }
-    
+
     return obj;
+
+  }
+
+  public async comparePassword(password: string, hashedPassword: string): Promise<boolean> {
+
+    try {
+      const compare = await bcrypt.compare(password, hashedPassword);
+      return compare;
+    } catch (error) {
+      throw new CustomError(400, { message: 'Error validating password!' });
+    }
 
   }
 
@@ -35,9 +48,7 @@ export class Cryptography {
       if (data.hasOwnProperty(key)) {
 
         if (this.sensitiveKeys.includes(key)) {
-          const value = data[key];
-          const encryptedValue = await bcrypt.hash(value, await bcrypt.genSalt(10)); // Encripta o valor
-          obj[key] = encryptedValue; // Armazena no novo objeto
+          const encryptedValue = data[key];
         } else {
           obj[key] = data[key]; // Armazena no novo objeto
         }
@@ -48,4 +59,6 @@ export class Cryptography {
     return obj;
 
   }
+
+
 }

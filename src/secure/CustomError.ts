@@ -3,6 +3,7 @@ export class CustomError extends Error {
 
     public info: object | undefined;
     public status: number;
+  previous: unknown;
 
     constructor(statusCode: number, info?: object | undefined) {
         super();

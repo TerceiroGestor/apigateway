@@ -24,7 +24,7 @@ export class AuthController {
             const { tokens } = await OAuth.getToken(req.query.code as string);
             const data = await AuthController.authUserInfo(tokens.access_token);
             const user = await new UserService().create(data);
-            const auth = await new AuthService().create(user, tokens.access_token);
+            const auth = await new AuthService().create(user);
             res.status(auth ? 200 : 403).json({ auth });
             
         } catch (error) {
