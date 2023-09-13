@@ -4,7 +4,7 @@ import { CustomError } from '../security/CustomError';
 import { Token } from '../security/Token';
 import { ValidationData } from '../security/ValidationData';
 
-export class validateMiddleware {
+export class ValidateMiddleware {
 
   static validationRequest(req: Request, res: Response, next: NextFunction) {
 

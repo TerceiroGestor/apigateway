@@ -1,10 +1,23 @@
 import { Router } from 'express';
-import { LoginController } from '../controllers/LoginController';
-import { validateMiddleware } from '../middleware/validationMiddleware';
+import { ValidateMiddleware } from '../middleware/validationMiddleware';
+import { AuthenticationMiddleware } from '../middleware/AuthenticationMiddleware';
+
 const loginRouter = Router();
 
-loginRouter.post('/', validateMiddleware.validationRequest, validateMiddleware.validationPatternsEmailPassword, new LoginController().signIn);
-loginRouter.get('/', validateMiddleware.validationRequest, validateMiddleware.validationPatternsEmail, new LoginController().signInState);
-loginRouter.delete('/', validateMiddleware.validationRequest, validateMiddleware.validationToken, new LoginController().signOut);
+loginRouter.post('/',
+    ValidateMiddleware.validationRequest,
+    ValidateMiddleware.validationPatternsEmailPassword,
+    (req, res, next) => {
+        new AuthenticationMiddleware().authenticate(req, res, next)
+    }
+);
+
+loginRouter.delete('/',
+    ValidateMiddleware.validationRequest,
+    ValidateMiddleware.validationToken,
+    (req, res, next) => {
+        new AuthenticationMiddleware().signOut(req, res, next)
+    }
+);
 
 export default loginRouter;
