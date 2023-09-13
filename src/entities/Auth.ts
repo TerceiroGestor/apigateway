@@ -7,30 +7,21 @@ import {
     DeleteDateColumn,
     VersionColumn,
     ManyToOne,
-    JoinColumn
+    JoinColumn,
+
 } from 'typeorm';
 
 import { User } from './User';
+import { authRepository } from "../repositories/authRepository";
+import { LogService } from "../services/LogService";
 
-@Entity('logins')
-export class Login {
+@Entity('auths')
+export class Auth {
     @PrimaryGeneratedColumn('uuid')
     id: string | undefined;
 
     @Column('uuid', { unique: false })
     user_id: string | undefined
-
-    @Column({ type: "varchar", nullable: false })
-    firebase_uid: string | undefined;
-
-    @Column('varchar', { nullable: true })
-    email: string | undefined;
-
-    @Column('boolean')
-    emailVerified: boolean | undefined;
-
-    @Column('text')
-    accessToken: string | undefined;
 
     @Column('json', { nullable: true })
     accessInfo: string | undefined
@@ -44,7 +35,8 @@ export class Login {
     @VersionColumn()
     version: number | undefined
 
-    @ManyToOne(() => User, user => user.logins)
+    @ManyToOne(() => User, user => user.auths)
     @JoinColumn({ name: 'user_id' })
     user: User | undefined;
+
 }

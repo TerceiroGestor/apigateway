@@ -23,7 +23,7 @@ export class Log {
     customerInfo: string | undefined
 
     @Column({ type: 'json', nullable: true })
-    requestInfo: string | undefined
+    details: string | undefined
 
     @CreateDateColumn()
     created: Date | undefined

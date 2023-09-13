@@ -1,6 +1,6 @@
 CREATE TABLE "users" (
   "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-  "firebase_uid" varchar,
+  "auth_id" varchar,
   "name" varchar,
   "social_name" varchar,
   "lastname" varchar,
@@ -17,10 +17,9 @@ CREATE TABLE "users" (
 CREATE TABLE "logins" (
   "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
   "user_id" uuid,
-  "firebase_uid" varchar,
   "email" varchar,
   "emailVerified" boolean,
-  "accessToken" text,
+  "token" text,
   "accessInfo" json,
   "created" timestamp without time zone NOT NULL DEFAULT now(),
   "updated" timestamp without time zone NOT NULL DEFAULT now(),

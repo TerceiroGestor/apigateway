@@ -6,11 +6,13 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     DeleteDateColumn,
-    VersionColumn
+    VersionColumn,
 } from "typeorm";
 
-import { Login } from './Login';
+import { Auth } from './Auth';
 import { Log } from './Log';
+import { userRepository } from "../repositories/userRepository";
+import { LogService } from "../services/LogService";
 
 @Entity('users')
 
@@ -19,8 +21,8 @@ export class User {
     id: string | undefined
 
     @Column({ type: "varchar", nullable: false })
-    firebase_uid: string | undefined;
-    
+    auth_id: string | undefined;
+
     @Column({ type: "varchar", nullable: false })
     name: string | undefined
 
@@ -33,11 +35,17 @@ export class User {
     @Column({ type: "varchar", nullable: false })
     email: string | undefined
 
+    @Column({ type: "boolean", nullable: false })
+    email_verified: boolean | undefined
+
     @Column({ type: "varchar", nullable: false })
     password: string | undefined
 
     @Column({ type: "date", nullable: false })
     birth: Date | undefined
+
+    @Column({ type: "text", nullable: false })
+    token: string | undefined
 
     @CreateDateColumn()
     created: Date | undefined
@@ -49,9 +57,24 @@ export class User {
     version: number | undefined
 
     // relationship
-    @OneToMany(() => Login, login => login.user)
-    logins: Login[] | undefined;
-  
+    @OneToMany(() => Auth, auth => auth.user)
+    logins: Auth[] | undefined;
+
     @OneToMany(() => Log, log => log.user)
     logs: Log[] | undefined;
+    auth: any;
+    auths: any;
+
+    /* @BeforeInsert()
+    async checkIfUserExists() {
+
+        const user = await userRepository.findOneBy({ email: this.email });
+
+        if (user) {
+
+            new LogService().create(user, { message: `O usuário com o email ${this.email} já existe.`});
+            throw new Error(`O usuário com o email ${this.email} já existe.`);
+
+        }
+    } */
 }

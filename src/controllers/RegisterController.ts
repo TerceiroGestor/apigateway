@@ -1,166 +1,97 @@
-import { Request, Response } from "express";
-import { UserController } from "./UserController";
-import { google } from 'googleapis';
-import { auth, googleAuth } from "../auth/firebaseAdmin";
-import { request } from "http";
-
-
-//import { auth } from "../auth/firebaseConfig";
-//import { createUserWithEmailAndPassword, deleteUser, sendPasswordResetEmail } from "firebase/auth";
-//import * as admin from "firebase-admin";
+import { NextFunction, Request, Response } from "express";
+import { SendEmail } from "../notifications/SendEmail";
+import { Token } from "../secure/Token";
+import { UserService } from "../services/UserService";
+import { CustomError } from "../secure/CustomError";
+import { ValidationData } from "../secure/ValidationData";
 
 export class RegisterController {
 
-  /** OK
-   * @param req 
-   * @param res
-   * @returns json
-   * @link https://firebase.google.com/docs/reference/node/firebase.auth.Auth#createuserwithemailandpassword
-   * @Doc https://firebase.google.com/docs/auth/web/google-signin?hl=pt-br
-   */
-  async create(req: Request, res: Response) {
+    public async create(req: Request, res: Response, next: NextFunction) {
 
-    auth.createUser({
-      email: req.body.email,
-      password: req.body.password
-    })
-      .then(async (userCredential) => {
+        try {
 
-        const credential = userCredential
-        const user = await new UserController().create(req, res, credential);
+            const token = await new Token().generateToken(req.body, '1d');
 
-      })
-      .catch((error) => {
-        console.error('Erro ao criar usuário:', error);
-      });
-    /* createUserWithEmailAndPassword(auth, req.body.email, req.body.password)
-      .then(async (userCredential) => {
+            const [create, email] = [
+                await new UserService().create(req.body),
+                await new SendEmail().sendEmailVerified(token, req.body, 'Email Validation')
+            ];
 
-        const credential = userCredential.user;
-        const user = await new UserController().create(req, res, credential);
+            res.status(200).json({ create, email });
 
-      })
-      .catch((error) => {
-        res.status(500).json(error);
-      }); */
-  }
-
-  //OK
-  async delete(req: Request, res: Response) {
-
-    auth.deleteUser(req.body.firebase_uid).then((response) => {
-
-      // Corrigir auth não tem informações de usuário para gerar log
-      //new LogController().create(req, res, auth, { message: 'response signOut' });
-      res.status(200).json({ code: true, message: 'successfully deleted user' });
-    })
-      .catch((error) => {
-        res.status(500).json(error);
-      })
-    /* const user = auth.currentUser;
-    if (user) {
-      deleteUser(user)
-        .then(() => {
-          return true
-        })
-        .catch((error) => {
-          res.status(404).json(error);
-        });
-    } else {
-      res.status(404).json({ message: 'Not data' });
-    } */
-  }
-
-  //Review
-  async update(req: Request, res: Response) {
-
-    auth.updateUser(req.body.firebase_uid, {
-      email: 'modifiedUser@example.com',
-      phoneNumber: '+11234567890',
-      emailVerified: true,
-      password: 'newPassword',
-      displayName: 'Jane Doe',
-      photoURL: 'http://www.example.com/12345678/photo.png',
-      disabled: true,
-    })
-      .then((userRecord) => {
-        // See the UserRecord reference doc for the contents of userRecord.
-        console.log('Successfully updated user', userRecord.toJSON());
-      })
-      .catch((error) => {
-        console.log('Error updating user:', error);
-      });
-  }
-
-  // Finalizar
-  async sendVerificationEmail(req: Request, res: Response) {
-
-    /* const user = auth.currentUser;
-    try {
-      const data = '' // await sendEmailVerification(user);
-      res.status(201).json(data);
-    } catch (error) {
-      res.status(201).json(error);
-    } */
-  }
-
-  // Finalizar
-  async sendEmailResetPassword(req: Request, res: Response) {
-    //const auth = getAuth();
-    /* try {
-      const data = await sendPasswordResetEmail(auth, req.body.email);
-      res.status(201).json(data);
-    } catch (error) {
-      res.status(500).json(error);
-    } */
-  }
-
-  /**
-   * 
-   * @param req 
-   * @param res 
-   * @Doc https://developers.google.com/identity/oauth2/web/guides/overview?hl=pt-br
-   * @Doc https://developers.google.com/identity/gsi/web/guides/display-button?hl=pt-br#javascript
-   * @Console https://console.cloud.google.com/apis/credentials?project=terceiro-gestor&hl=pt-br&supportedpurview=project
-   */
-  async googleAuth(req: Request, res: Response) {
-
-    const authUrl = googleAuth.generateAuthUrl({
-      access_type: 'offline',
-      scope: ['email', 'profile'],
-    });
-
-    res.status(200).json({
-      uri: authUrl
-    })
-
-  }
-
-
-  //const user = admin.auth.GoogleAuthProvider.credential(id_token)
-
-  //const oauth2Client = new google.auth.OAuth2();
-  //oauth2Client.setCredentials({ access_token });
-  //const oauth2 = google.oauth2({ auth: oauth2Client, version: 'v2' });
-  //const userInfo = await oauth2.userinfo.get();
-
-  // falta retornor os dados de autenticação para o frontend
-  //res.redirect('http://localhost:3000/dashboard')
-  async googleCallback(req: Request, res: Response) {
-
-    try {
-
-      const { tokens } = await googleAuth.getToken(req.body.code);
-      const { id_token, access_token, expiry_date, refresh_token } = tokens;
-      res.status(200).json({ token: access_token })
-
-    } catch (error) {
-      console.error('Erro durante a autenticação:', error);
-      res.status(500).send('Erro durante a autenticação');
+        } catch (error) {
+            next(error);
+        }
     }
-  }
 
-  async googleLogout(req: Request, res: Response) {
+    public async emailVerified(req: Request, res: Response, next: NextFunction) {
 
-  }
+        try {
+
+            const validation = ValidationData.getInstance();
+            const user = await new UserService().update(validation.userData);
+            //Object.assign(validation.userData);
+            res.status(200).json(validation.userData);
+
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    public async resetPassword(req: Request, res: Response, next: NextFunction) {
+
+        try {
+
+            const user = await new UserService().checkIfUserExists(req.body);
+            if (user) {
+                const token = await new Token().generateToken(req.body, '15m');
+                const user = await new UserService().insertToken(req.body, token);
+                const email = await new SendEmail().sendResetPassword(token, req.body, 'Reset Password!');
+                res.status(200).json(email);
+            } else {
+                throw new CustomError(400, { message: 'Email does not exist!' });
+            }
+
+        } catch (error) {
+            next(error);
+        }
+
+    }
+
+    public async verifyResetPassword(req: Request, res: Response, next: NextFunction) {
+        try {
+            const validation = ValidationData.getInstance();
+            if (validation.userData) {
+                const user = await new UserService().checkToken(validation.userData.email, req.query.token);
+                if (user.email_verified) {
+                    res.status(200).json(user);
+                } else {
+                    throw new CustomError(400, { message: 'Error when updating password!' });
+                }
+            }
+
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    public async renewPassword(req: Request, res: Response, next: NextFunction) {
+
+        try {
+            const user = await new UserService().update(req.body);
+
+            if(user){
+                res.status(200).json({ message: 'Success in updating password!' });
+            }else{
+                throw new CustomError(400, {message: 'Error updating password!'});
+            }
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    private async token(data: any, time: string) {
+        return await new Token().generateToken(data, time);
+    }
 }
