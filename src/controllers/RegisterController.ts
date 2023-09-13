@@ -65,7 +65,7 @@ export class RegisterController {
             if (validation.userData) {
                 const user = await new UserService().checkToken(validation.userData.email, req.query.token);
                 if (user.email_verified) {
-                    res.status(200).json(user);
+                    res.status(200).json({id: user.id, name: user.name, email: user.email, token: user.token});
                 } else {
                     throw new CustomError(400, { message: 'Error when updating password!' });
                 }
@@ -82,7 +82,7 @@ export class RegisterController {
             const user = await new UserService().update(req.body);
 
             if(user){
-                res.status(200).json({ message: 'Success in updating password!' });
+                res.status(200).json({status:true, message: 'Success in updating password!' });
             }else{
                 throw new CustomError(400, {message: 'Error updating password!'});
             }

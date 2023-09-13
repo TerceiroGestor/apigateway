@@ -15,18 +15,20 @@ export class UserService {
 
   public async create(data?: any): Promise<any> {
 
-    if (await this.checkIfUserExists(data)) {
-      throw new CustomError(400, { message: 'Existing email!' });
-    }
+    
 
     try {
+
+      if (await this.checkIfUserExists(data)) {
+        throw new CustomError(400, { message: 'Existing email!' });
+      }
 
       const encryption = await new Cryptography().encryption(data);
       const result = await this.store.save(this.store.create(encryption));
       return !!result
 
     } catch (error) {
-      throw new CustomError(400, { message: 'Database error!' });
+      throw error;
     }
 
   }
@@ -71,12 +73,10 @@ export class UserService {
   public async checkIfUserExists(data: any): Promise<boolean> {
 
     try {
+
       const user = await this.store.findOneBy({ email: data.email });
-      if (user.email_verified) {
-        return !!user;
-      } else {
-        return false;
-      }
+      return !!user;
+
     } catch (error) {
       throw new CustomError(400, { message: 'Database error!' });
     }
