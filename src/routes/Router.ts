@@ -4,7 +4,6 @@ import mainRouter from "./mainRoutes";
 import googleRouter from "./googleRoutes";
 import loginRouter from "./loginRoutes";
 
-
 const routes = Router();
 
 routes.use('/register', registerRouter);

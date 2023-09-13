@@ -1,6 +1,6 @@
 import { AppDataSource } from "../data-source";
 import { Auth } from "../entities/Auth";
-import { CustomError } from "../secure/CustomError";
+import { CustomError } from "../security/CustomError";
 
 export class AuthService {
 

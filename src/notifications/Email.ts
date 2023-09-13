@@ -1,5 +1,5 @@
 import * as nodemailer from 'nodemailer';
-import { CustomError } from '../secure/CustomError';
+import { CustomError } from '../security/CustomError';
 
 export class Email {
 

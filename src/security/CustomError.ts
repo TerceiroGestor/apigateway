@@ -1,4 +1,4 @@
-import { HttpStatusMessages } from "../secure/HttpStatusMessages";
+import { HttpStatusMessages } from "../security/HttpStatusMessages";
 export class CustomError extends Error {
 
     public info: object | undefined;

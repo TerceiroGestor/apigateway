@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import { Validator } from '../secure/Validator';
-import { CustomError } from '../secure/CustomError';
-import { Token } from '../secure/Token';
-import { ValidationData } from '../secure/ValidationData';
+import { Validator } from '../security/Validator';
+import { CustomError } from '../security/CustomError';
+import { Token } from '../security/Token';
+import { ValidationData } from '../security/ValidationData';
 
 export class validateMiddleware {
 

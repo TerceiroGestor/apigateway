@@ -1,7 +1,7 @@
 import { AppDataSource } from "../data-source";
 import { User } from "../entities/User";
-import { CustomError } from "../secure/CustomError";
-import { Cryptography } from "../secure/Cryptography";
+import { CustomError } from "../security/CustomError";
+import { Cryptography } from "../security/Cryptography";
 import e from "express";
 
 

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { UserService } from "../services/UserService";
 import { AuthService } from "../services/AuthService";
-import { Token } from "../secure/Token";
+import { Token } from "../security/Token";
 
 export class LoginController {
 

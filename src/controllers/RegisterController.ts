@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { SendEmail } from "../notifications/SendEmail";
-import { Token } from "../secure/Token";
+import { Token } from "../security/Token";
 import { UserService } from "../services/UserService";
-import { CustomError } from "../secure/CustomError";
-import { ValidationData } from "../secure/ValidationData";
+import { CustomError } from "../security/CustomError";
+import { ValidationData } from "../security/ValidationData";
 
 export class RegisterController {
 
