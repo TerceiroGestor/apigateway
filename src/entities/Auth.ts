@@ -12,8 +12,6 @@ import {
 } from 'typeorm';
 
 import { User } from './User';
-import { authRepository } from "../repositories/authRepository";
-import { LogService } from "../services/LogService";
 
 @Entity('auths')
 export class Auth {

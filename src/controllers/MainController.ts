@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { LogController } from "./LogController";
 
 export class MainController {
 

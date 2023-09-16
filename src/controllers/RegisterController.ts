@@ -63,9 +63,9 @@ export class RegisterController {
         try {
             const validation = ValidationData.getInstance();
             if (validation.userData) {
-                const user = await new UserService().checkToken(validation.userData.email, req.query.token);
+                const user = await new UserService().lookForUser(validation.userData);
                 if (user.email_verified) {
-                    res.status(200).json({id: user.id, name: user.name, email: user.email, token: user.token});
+                    res.status(200).json(validation.userData);
                 } else {
                     throw new CustomError(400, { message: 'Error when updating password!' });
                 }

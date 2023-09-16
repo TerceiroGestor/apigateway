@@ -10,9 +10,6 @@ import {
 } from "typeorm";
 
 import { Auth } from './Auth';
-import { Log } from './Log';
-import { userRepository } from "../repositories/userRepository";
-import { LogService } from "../services/LogService";
 
 @Entity('users')
 
@@ -44,9 +41,6 @@ export class User {
     @Column({ type: "date", nullable: false })
     birth: Date | undefined
 
-    @Column({ type: "text", nullable: false })
-    token: string | undefined
-
     @CreateDateColumn()
     created: Date | undefined
     @UpdateDateColumn()
@@ -59,22 +53,5 @@ export class User {
     // relationship
     @OneToMany(() => Auth, auth => auth.user)
     logins: Auth[] | undefined;
-
-    @OneToMany(() => Log, log => log.user)
-    logs: Log[] | undefined;
-    auth: any;
     auths: any;
-
-    /* @BeforeInsert()
-    async checkIfUserExists() {
-
-        const user = await userRepository.findOneBy({ email: this.email });
-
-        if (user) {
-
-            new LogService().create(user, { message: `O usuário com o email ${this.email} já existe.`});
-            throw new Error(`O usuário com o email ${this.email} já existe.`);
-
-        }
-    } */
 }

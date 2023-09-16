@@ -1,12 +1,11 @@
 import { Request, Response } from "express";
 import { OAuth } from "../auth/OAuth";
-import fetch from "node-fetch";
+//import fetch from 'node-fetch';
 import { UserService } from "../services/UserService";
 import { AuthService } from "../services/AuthService";
 
 export class AuthController {
 
-    
     async auth(req: Request, res: Response) {
 
         const authUrl = OAuth.generateAuthUrl({

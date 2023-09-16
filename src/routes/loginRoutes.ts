@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { ValidateMiddleware } from '../middleware/validationMiddleware';
+import { ValidateMiddleware } from '../middleware/ValidateMiddleware';
 import { AuthenticationMiddleware } from '../middleware/AuthenticationMiddleware';
 
 const loginRouter = Router();

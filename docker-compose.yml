@@ -1,0 +1,33 @@
+version: '3'
+services:
+  api-gateway:
+    image: node:alpine
+    container_name: jokes-service
+    command: sh -c "npm install && npm run dev"
+    working_dir: /app
+    volumes:
+      - ./:/app
+    ports: 
+      - 3000:3000
+    depends_on:
+      - db-jokes-service
+    networks:
+      - main-network
+
+  db-jokes-service:
+    image: postgres:latest
+    restart: always
+    container_name: db-jokes-service
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: e8xf1538fet
+      POSTGRES_DB: postgres
+    volumes:
+      - ./scripts:/docker-entrypoint-initdb.d
+    ports:
+      - "5400:5432"
+    networks:
+      - main-network
+
+networks:
+  main-network:

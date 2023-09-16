@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 import { AppDataSource } from './data-source';
@@ -29,8 +29,8 @@ AppDataSource.initialize()
     });
 
   })
-  .catch((err) => {
-    console.error("Error during Data Source initialization", err)
+  .catch((error: any) => {
+    console.error("Error during Data Source initialization", error)
   })
 
 

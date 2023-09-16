@@ -2,8 +2,6 @@ import { AppDataSource } from "../data-source";
 import { User } from "../entities/User";
 import { CustomError } from "../security/CustomError";
 import { Cryptography } from "../security/Cryptography";
-import e from "express";
-
 
 export class UserService {
 
@@ -14,9 +12,7 @@ export class UserService {
   }
 
   public async create(data?: any): Promise<any> {
-
     
-
     try {
 
       if (await this.checkIfUserExists(data)) {
