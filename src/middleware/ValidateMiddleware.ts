@@ -86,6 +86,7 @@ export class ValidateMiddleware {
     try {
 
       const validate = await new Token().validateToken(req.body.token as string);
+
       if (!validate.validate) {
         throw new CustomError(401);
       }
@@ -117,6 +118,23 @@ export class ValidateMiddleware {
     }
 
     next();
+  }
+
+  static async validationHeader(req: Request, res: Response, next: NextFunction) {
+
+    try {
+      if (!req.headers.authorization) { throw new CustomError(401, { message: 'Not authorization!' }); }
+      
+      const header = JSON.parse(req.headers.authorization || '');
+      const authorization = process.env.AUTHORIZATION;
+
+      if (header.key != authorization) {throw new CustomError(401, { message: 'Not authorization!' });}
+
+      next();
+
+    } catch (error) {
+      next(error);
+    }
   }
 
 }
